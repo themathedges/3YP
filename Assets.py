@@ -21,7 +21,7 @@ class Non_Dispatchable:
         self.capacity = 0
         self.install_cost = 0
         self.lifetime = 25
-        self.genFiT = 5.24 # p/kWh
+        self.genFiT = 5.24 # feed in tariff p/kWh
 
 
 class Dispatchable:
@@ -31,9 +31,7 @@ class Dispatchable:
         self.capacity = 0
         self.install_cost = 0
         self.lifetime = 25
-        self.genFiT = 5.24 # p/kWh
-
-# %% Non-dispatchable assets
+        self.genFiT = 5.24 # feed in tariff p/kWh
 
 
 class pvAsset(Non_Dispatchable):
@@ -62,10 +60,10 @@ class pvAsset(Non_Dispatchable):
         self.asset_type = 'PV'
         self.install_cost = install_cost * 100  # p/kWp
         self.maintenance = maintenance * 100 # p per year
-        self.cf = self.loadProfile()
+        self.cf = self.solarProfile()
         self.nInstallations = nInstallations
         
-    def loadProfile(self):
+    def solarProfile(self):
         """
         Loads the kW/kWp hourly solar profile
 
@@ -77,9 +75,10 @@ class pvAsset(Non_Dispatchable):
         """
         df = pd.read_csv(self.profile_filepath, index_col=0,
                          parse_dates=True, dayfirst=True)  # kW/kWp
-        
-        return df
-        
+        print('original solar data coming...')
+        print(df.info())
+        print(df.head(50))
+        return df  
 
     def getOutput(self, dt):
         """
@@ -94,21 +93,19 @@ class pvAsset(Non_Dispatchable):
         -------
         PV output : numpy array
         """
-        #print(self.cf.head(40)) 
-
         cfHH = self.cf.resample('0.5H').mean()
         # adding a missing point at the end
         cfHH = cfHH.append(pd.DataFrame({cfHH.columns[0]: np.nan},
                                       index=[(cfHH.index[-1] +
                                               timedelta(minutes=30))]))
         cfHH = cfHH.interpolate()
-        print('solar data')
+        print('modified solar data coming...')
+        print(cfHH.info())
         print(cfHH.head(50))
-        print('dt coming...')
-        print(dt)
-        print('dt done')
-        output = cfHH.values * self.capacity *self.nInstallations * dt # kWh - need to x by number of installations!
+        output = cfHH.values * self.capacity * self.nInstallations * dt # kWh
         self.output = output
+        print('solar output coming...')
+        print(output)
         return output
 
 
@@ -133,12 +130,12 @@ class loadAsset(Non_Dispatchable):
         self.profile = self.loadProfile()
         
     def loadProfile(self):
-        df = pd.read_csv(self.profile_filepath, usecols=[1])
-        #print('load data')
-        #print(df.head(40))
+        df = pd.read_csv(self.profile_filepath, usecols=[1]) # kW
+        print('load data coming...')
+        print(df.info())
+        print(df.head(50))
         return df
         
-
     def getOutput(self, dt):
         """
         Return domestic demand
@@ -153,13 +150,11 @@ class loadAsset(Non_Dispatchable):
         Domestic demand : numpy array
         """
         dem = self.profile.values
-        output = dem * self.nHouses * dt
+        output = dem * self.nHouses * dt # kWh
         self.output = output
-        print('load data')
-        print(self.profile.head(50))
+        print('load output coming...')
+        print(output)
         return output
-
-# %% Dispatchable Assets
 
 
 class PracticalBatteryAsset1(Dispatchable):
@@ -209,7 +204,6 @@ class PracticalBatteryAsset1(Dispatchable):
         -------
         Battery energy use profile : numpy array
         """
-
         T = len(net_load)
         output = np.zeros((T, 1))
         for j in range(len(net_load)):
@@ -228,7 +222,6 @@ class PracticalBatteryAsset1(Dispatchable):
             elif net_load[j] == 0:  # do nothing
                 self.soc[j] = soc
         self.output = output
-        #plt.plot(output, label='1st life battery')
         return output
 
 
@@ -279,7 +272,6 @@ class PracticalBatteryAsset2(Dispatchable):
         -------
         Battery energy use profile : numpy array
         """
-
         T = len(net_load)
         output = np.zeros((T, 1))
         for j in range(len(net_load)):
@@ -298,11 +290,10 @@ class PracticalBatteryAsset2(Dispatchable):
             elif net_load[j] == 0:  # do nothing
                 self.soc[j] = soc
         self.output = output
-        #plt.plot(output, label='1st life battery')
         return output
 
 
-class hydroAsset(Dispatchable):
+class hydroAsset(Non_Dispatchable):
     """
     Sandford hydro asset class
 
@@ -328,24 +319,15 @@ class hydroAsset(Dispatchable):
         self.maintenance = maintenance * 100 # p per year
         self.genFiT = 5.24  # p/kWh     
         self.profile_filepath = profile_filepath
-        self.profile = self.genOutput()
+        self.profile = self.hydroProfile()
         
-    def genOutput(self):
-        df = pd.read_csv(self.profile_filepath, usecols=[0, 1], #index_col=0,
-                         parse_dates=True, dayfirst=True)
-
-        df['Date_Time'] = pd.to_datetime(df['Date_Time'])
-        df['Generator active power (kW)'] = pd.to_numeric(df['Generator active power (kW)'])
-        model_8_current_mask_start = pd.to_datetime('1/1/19 00:00')
-        model_8_current_mask_end = pd.to_datetime('12/4/19 00:00')
-        model_8_gen_current_mask = (df['Date_Time'] >= model_8_current_mask_start) & (df['Date_Time'] <= model_8_current_mask_end)
-        gen_df = df.loc[model_8_gen_current_mask]
-
-        print('gen data top modified')
-        print(gen_df.head(50))
-        print('gen data btm modified')
-        print(gen_df.head(-50))
-        return gen_df 
+    def hydroProfile(self):
+        df = pd.read_csv(self.profile_filepath, usecols=[1], 
+                         parse_dates=True, dayfirst=True) # kW
+        print('hydro data coming...')
+        print(df.info())
+        print(df.head(50))
+        return df 
 
     def getOutput(self, dt):
         """
@@ -360,17 +342,11 @@ class hydroAsset(Dispatchable):
         -------
         Sandford Hydro output : numpy array
         """
-        #for some reason dt is a vector here?!!! i have no idea why and its breaking this program
-        print('dt coming...')
-        print(dt)
-        print('dt done')
         gen = self.profile.values
-        output = gen * dt         
+        output = gen * dt # kWh
         self.output = output
+        print('hydro output coming...')
+        print(output)
         return output
-
-if __name__ == "__main__":                 # i dont know what this does
-    load_site1 = loadAsset(1)
-    pv = pvAsset(1, 10, 0).getOutput(0.5)
 
 

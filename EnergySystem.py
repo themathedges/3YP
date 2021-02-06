@@ -51,7 +51,7 @@ class EnergySystem:
         net_load : Array
             The net load of the system.
         """
-        nondispat = self.nondispat  # nondispatcable asset list
+        nondispat = self.nondispat  # nondispatchable asset list
         dispat = self.dispat  # dispatchable asset list
 
         # sum non-dispatchable assets
@@ -60,7 +60,9 @@ class EnergySystem:
             if asset.asset_type == 'DOMESTIC_LOAD':
                 profile = nondispat[i].getOutput(self.dt)
             elif asset.asset_type == 'PV':
-                profile = -1 * nondispat[i].getOutput(self.dt)  # might want -1 inside asset 
+                profile = -1 * nondispat[i].getOutput(self.dt)  # -1 x generation assets!
+            elif asset.asset_type == 'HYDRO':
+                profile = -1 * nondispat[i].getOutput(self.dt)
 
             net_nondis += profile
 
