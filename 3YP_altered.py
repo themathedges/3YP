@@ -19,7 +19,7 @@ from pandas import Timestamp
 
 import Assets as AS
 import EnergySystem as ES
-#import Market as MK
+import Market as MK
 
 
 #######################################
@@ -75,6 +75,17 @@ net_load = energy_system.basic_energy_balance()
 #######################################
 
 # no
+grid_sale_price = 0.055       # price paid for exports (£/kWh) grid/Octopus
+market1 = MK.marketObject(energy_system, export_rate= grid_sale_price) 
+
+# run
+opCost = market1.getTotalCost()
+grid_cost = market1.getGridCost().sum()
+print("Annual network cost: £ %.2f" % (grid_cost / 100))
+purchased, sold = market1.gridBreakdown()
+
+purchased_daily = ES.E_to_dailyE(purchased, dt) / 100  # convert to pounds
+sold_daily = ES.E_to_dailyE(sold, dt) / 100            # convert to pounds
 
 # #######################################
 # ### STEP 7: plot results
