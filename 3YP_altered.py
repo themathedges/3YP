@@ -37,23 +37,27 @@ dispatchable = []
 non_dispatchable = []
 all_assets = []
 
-# PV generation
-pv_site1 = AS.pvAsset() # using 1500 of these for every house in K
+# PV Generation
+pv_site1 = AS.pvAsset()
 non_dispatchable.append(pv_site1)
 
-# Load
-load_site1 = AS.loadAsset() # using 1700 of these for every household in K
-non_dispatchable.append(load_site1)
-
-# Battery storage
-battery_site1 = AS.PracticalBatteryAsset1(dt, T) # using 700 1st life EVs
-dispatchable.append(battery_site1)
-battery_site2 = AS.PracticalBatteryAsset2(dt, T) # using 200 2nd life EVs
-dispatchable.append(battery_site2)
-
-# Hydro generation
+# Hydro Generation
 hydro_site1 = AS.hydroAsset()
 non_dispatchable.append(hydro_site1)
+
+# Load
+load_site1 = AS.loadAsset() 
+non_dispatchable.append(load_site1)
+
+# Heat Pump Load
+#hp_site1 = AS.hpAsset()
+#non_dispatchable.append(hp_site1)
+
+# Battery Storage
+battery_site1 = AS.PracticalBatteryAsset1(dt, T)
+dispatchable.append(battery_site1)
+battery_site2 = AS.PracticalBatteryAsset2(dt, T) 
+dispatchable.append(battery_site2)
 
 #######################################
 #STEP 4: setup and run the energy system

@@ -19,12 +19,12 @@ class EnergySystem:
     ----------
     nondispat : list
         List of non-dispatchable asset objects 
-        i.e. loadAsset, pvAsset
+        i.e. loadAsset, pvAsset, hydroAsset, hpAsset
 
     dispat : list
         List of dispatchable assets. The order of which determines control
         strategy in basic energy balance.
-        i.e. PracticalBatteryAsset, hydroAsset
+        i.e. PracticalBatteryAsset
 
     dt : float
         time step
@@ -59,6 +59,8 @@ class EnergySystem:
         for i, asset in enumerate(nondispat):
             if asset.asset_type == 'DOMESTIC_LOAD':
                 profile = nondispat[i].getOutput(self.dt)
+            #elif asset.asset_type == 'HEAT_PUMP_LOAD':
+                #profile = nondispat[i].getOutput(self.dt)
             elif asset.asset_type == 'PV':
                 profile = -1 * nondispat[i].getOutput(self.dt)  # -1 x generation assets!
             elif asset.asset_type == 'HYDRO':

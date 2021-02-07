@@ -157,6 +157,55 @@ class loadAsset(Non_Dispatchable):
         return output
 
 
+#class hpAsset(Dispatchable):
+
+    #Heat Pump asset class
+
+    #Parameters
+    #----------
+    #nHouses : int
+    #    Number of houses
+        
+    #profile_filepath : str
+    #    Filepath to load profile
+
+    """
+    def __init__(self, nHouses=1700, profile_filepath='?', **kwargs):
+        super().__init__()
+        self.nHouses = nHouses
+        self.asset_type = 'HEAT_PUMP_LOAD'
+        self.install_cost = 0
+        self.profile_filepath = profile_filepath
+        self.profile = self.hpProfile()
+        
+    def hpProfile(self):
+        df = pd.read_csv(self.profile_filepath, usecols=[1]) # kW
+        print('heat pump load data coming...')
+        print(df.info())
+        print(df.head(50))
+        return df
+        
+    def getOutput(self, dt):
+    
+        #Return heat pump electricity demand
+
+        #Parameters
+        #----------
+        #dt : float
+        #    Time interval (hours)
+
+        #Returns
+        #-------
+        #Heat pump electricity demand : numpy array
+        
+        hp = self.profile.values
+        output = hp * self.nHouses * dt # kWh
+        self.output = output
+        print('heat pump load output coming...')
+        print(output)
+        return output
+    """
+
 class PracticalBatteryAsset1(Dispatchable):
     """
     1st life EV battery asset class
