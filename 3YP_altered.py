@@ -46,17 +46,19 @@ hydro_site1 = AS.hydroAsset()
 non_dispatchable.append(hydro_site1)
 
 # Load
-load_site1 = AS.loadAsset() 
+load_site1 = AS.loadAsset() # domestic load
 non_dispatchable.append(load_site1)
 
-# Heat Pump Load
-#hp_site1 = AS.hpAsset()
-#non_dispatchable.append(hp_site1)
+#load_site2 = AS.ndAsset() # non-domestic load
+#non_dispatchable.append(load_site2)
+
+#load_site3 = AS.hpAsset() # heat pump electricity demand
+#non_dispatchable.append(load_site3)
 
 # Battery Storage
-battery_site1 = AS.PracticalBatteryAsset1(dt, T)
+battery_site1 = AS.PracticalBatteryAsset1(dt, T) # domestic battery storage - 1st life EVs
 dispatchable.append(battery_site1)
-battery_site2 = AS.PracticalBatteryAsset2(dt, T) 
+battery_site2 = AS.PracticalBatteryAsset2(dt, T) # community battery storage - 2nd life EVs
 dispatchable.append(battery_site2)
 
 #######################################
@@ -74,7 +76,6 @@ net_load = energy_system.basic_energy_balance()
 ### STEP 6: setup and run the market
 #######################################
 
-# no
 grid_sale_price = 0.055       # price paid for exports (£/kWh) grid/Octopus
 market1 = MK.marketObject(energy_system, export_rate= grid_sale_price) 
 
@@ -91,62 +92,40 @@ sold_daily = ES.E_to_dailyE(sold, dt) / 100            # convert to pounds
 # ### STEP 7: plot results
 # #######################################
 
-#plt.stackplot(np.array(range(48)), pv_site1.output)#, hydro_site1.output)
-x_axis = pd.date_range(datetime.datetime(2017,1,1), datetime.datetime(2017, 12, 31, 23, 59, 59), freq='0.5H')
-#labels = ['PV Output']#, 'Hydro Operation']
-#ax = plt.subplot(1,1,1)
-#p1 = plt.stackplot(x_axis, pv_site1.output.T, battery_site1.output.T, labels=labels)
-#plt.plot(x_axis, net_load, '-k', label='Load')
-plt.plot(x_axis[1:48], net_load[1:48])
-#plt.xticks(range(365*48, (365*48)/12))
-#ax.set_xticklabels(['00:00','06:00','12:00','18:00','00:00'])
-plt.ylabel('kWh', color='k')
-plt.xlabel('Time', color='k')
-#ax.legend()
-#ax.format_xdata = mdates.DateFormatter('%m')
-#ax.autofmt_xdate()
-#plt.legend()
-#plt.plot(battery_site1.soc/battery_site1.capacity)
-plt.show()
-#plt.pause(0.01)
-
-
 # plot data together
-#fig,ax =  plt.subplots(nrows=3,ncols=2,sharex=True,sharey=False)
-#fig.tight_layout(pad=3.0)
-#x_axis = pd.date_range(datetime.datetime(2017,1,1), datetime.datetime(2017, 12, 31, 23, 59, 59), freq='0.5H')
-#plt.xticks(range(365*48, round((365*48)/12)), labels = ['00:00','06:00','12:00','18:00','00:00'])
-#ax.format_xdata = mdates.DateFormatter('%m')
-#ax.autofmt_xdate()
+fig,ax =  plt.subplots(nrows=3,ncols=2,sharex=True,sharey=False)
+fig.tight_layout(pad=3.0)
 
-#ax[0][0].plot(x_axis, net_load)
-#ax[0][0].set_ylabel('Net Load')
-#ax[0][0].set_xlabel('Time')
-#ax[0][0].set_title('1')
+x_axis = pd.date_range(datetime.datetime(2017,1,1), datetime.datetime(2017, 12, 31, 23, 59, 59), freq='0.5H')
 
-#ax[0][1].plot(load_site1.output.T)
-#ax[0][1].set_ylabel('Demand')
-#ax[0][1].set_xlabel('Time')
-#ax[0][1].set_title('2')
+ax[0][0].plot(x_axis[1:48], net_load[1:48])
+ax[0][0].set_ylabel('Net Load')
+ax[0][0].set_xlabel('Time')
+ax[0][0].set_title('1')
+
+#ax[0][1].plot(x_axis[1:48], load_site1.getOutput[1:48])
+ax[0][1].set_ylabel('Domestic Load')
+ax[0][1].set_xlabel('Time')
+ax[0][1].set_title('2')
 
 #ax[1][0].plot(battery_site1.output.T)
-#ax[1][0].set_ylabel('1st Life EV')
-#ax[1][0].set_xlabel('Time')
-#ax[1][0].set_title('3')
+ax[1][0].set_ylabel('PV Generation')
+ax[1][0].set_xlabel('Time')
+ax[1][0].set_title('3')
 
 #ax[1][1].plot(battery_site2.output.T)
-#ax[1][1].set_ylabel('2nd Life EV')
-#ax[1][1].set_xlabel('Time')
-#ax[1][1].set_title('4')
+ax[1][1].set_ylabel('Non-domestic Load')
+ax[1][1].set_xlabel('Time')
+ax[1][1].set_title('4')
 
 #ax[0][2].plot(pv_site1.output.T)
-#ax[0][2].set_ylabel('PV')
-#ax[0][2].set_xlabel('Time')
-#ax[0][2].set_title('4')
+ax[2][0].set_ylabel('Hydro Generation')
+ax[2][0].set_xlabel('Time')
+ax[2][0].set_title('6')
 
 #ax[1][2].plot(all_assets)
-#ax[1][2].set_ylabel('Net Load aswell?')
-#ax[1][2].set_xlabel('Time')
-#ax[1][2].set_title('4')
+ax[2][1].set_ylabel('Heat Pump Load')
+ax[2][1].set_xlabel('Time')
+ax[2][1].set_title('6')
 
-#plt.show()
+plt.show()

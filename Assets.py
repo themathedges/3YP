@@ -131,7 +131,7 @@ class loadAsset(Non_Dispatchable):
         
     def loadProfile(self):
         df = pd.read_csv(self.profile_filepath, usecols=[1]) # kW
-        print('load data coming...')
+        print('domestic load data coming...')
         print(df.info())
         print(df.head(50))
         return df
@@ -152,9 +152,58 @@ class loadAsset(Non_Dispatchable):
         dem = self.profile.values
         output = dem * self.nHouses * dt # kWh
         self.output = output
-        print('load output coming...')
+        print('domestic load output coming...')
         print(output)
         return output
+
+
+#class ndAsset(Non_Dispatchable):
+    #"""
+    #Load asset class
+
+    #Parameters
+    #----------
+    #nInstallations : int
+        #Number of installations
+        
+    #profile_filepath : str
+        #Filepath to load profile
+    """
+    def __init__(self, nInstallations=?, profile_filepath='data/?', **kwargs):
+        super().__init__()
+        self.nInstallations = nInstallations
+        self.asset_type = 'NON_DOMESTIC_LOAD'
+        self.install_cost = 0
+        self.profile_filepath = profile_filepath
+        self.profile = self.ndProfile()
+        
+    def ndProfile(self):
+        df = pd.read_csv(self.profile_filepath, usecols=[1]) # kW
+        print('non-domestic load data coming...')
+        print(df.info())
+        print(df.head(50))
+        return df
+        
+    def getOutput(self, dt):
+       
+        #Return non-domestic demand
+
+        #Parameters
+        #----------
+        #dt : float
+           # Time interval (hours)
+
+        #Returns
+        #-------
+        #Non-domestic demand : numpy array
+        
+        dem = self.profile.values
+        output = dem * self.nInstallations * dt # kWh
+        self.output = output
+        print('non-domestic load output coming...')
+        print(output)
+        return output
+    """
 
 
 #class hpAsset(Dispatchable):
@@ -398,4 +447,6 @@ class hydroAsset(Non_Dispatchable):
         print(output)
         return output
 
+if __name__ == "__main__":
+    pass
 
