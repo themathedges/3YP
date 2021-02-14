@@ -68,21 +68,22 @@ class EnergySystem:
             elif asset.asset_type == 'HYDRO':
                 profile = -1 * nondispat[i].getOutput(self.dt)
 
-            net_nondis += profile
+            net_nondis = net_nondis + profile
 
-        self.non_disp_load = net_nondis
+        self.non_disp_load = net_nondis #?
         net_load = net_nondis
 
         # deploy dispatchable gen
         for i, asset in enumerate(dispat):
-            surplus = net_load
-            profile = asset.getOutput(surplus)
-            net_load = surplus - profile
+            profile = asset.getOutput(net_load) # surplus load is passed to the batteries
+            net_load = net_load - profile
 
         self.net_load = net_load
-        self.disp_load = net_load - net_nondis
+        self.disp_load = net_load - net_nondis #?
+        disp_load = self.disp_load
+        non_disp_load = self.non_disp_load
 
-        return net_load
+        return net_load, disp_load, non_disp_load
 
 
 def E_to_dailyE(data, dt):

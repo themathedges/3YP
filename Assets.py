@@ -52,16 +52,16 @@ class pvAsset(Non_Dispatchable):
     maintenance_cost : float
         Annual maintenance cost in £s
     """
-    def __init__(self, capacity=4, profile_filepath='data/oxon_solar_2014.csv', install_cost=(6000/4),
-                 maintenance=100, nInstallations=1500, **kwargs):
+    def __init__(self, pvCapacity, pvInstallations, profile_filepath='data/oxon_solar_2014.csv', install_cost=(6000/4),
+                 maintenance=100, **kwargs):
         super().__init__()
         self.profile_filepath = profile_filepath
-        self.capacity = capacity
+        self.pvCapacity = pvCapacity
         self.asset_type = 'PV'
         self.install_cost = install_cost * 100  # p/kWp
         self.maintenance = maintenance * 100 # p per year
         self.cf = self.solarProfile()
-        self.nInstallations = nInstallations
+        self.pvInstallations = pvInstallations
         
     def solarProfile(self):
         """
@@ -102,7 +102,7 @@ class pvAsset(Non_Dispatchable):
         print('modified solar data coming...')
         print(cfHH.info())
         print(cfHH.head(50))
-        output = cfHH.values * self.capacity * self.nInstallations * dt # kWh
+        output = cfHH.values * self.pvCapacity * self.pvInstallations * dt # kWh
         self.output = output
         print('solar output coming...')
         print(output)
@@ -121,9 +121,9 @@ class loadAsset(Non_Dispatchable):
     profile_filepath : str
         Filepath to load profile
     """
-    def __init__(self, nHouses=1700, profile_filepath='data/oxon_class1_year_load.csv', **kwargs):
+    def __init__(self, nHouseholds, profile_filepath='data/oxon_class1_year_load.csv', **kwargs):
         super().__init__()
-        self.nHouses = nHouses
+        self.nHouseholds = nHouseholds
         self.asset_type = 'DOMESTIC_LOAD'
         self.install_cost = 0
         self.profile_filepath = profile_filepath
@@ -150,7 +150,7 @@ class loadAsset(Non_Dispatchable):
         Domestic demand : numpy array
         """
         dem = self.profile.values
-        output = dem * self.nHouses * dt # kWh
+        output = dem * self.nHouseholds * dt # kWh
         self.output = output
         print('domestic load output coming...')
         print(output)
@@ -279,11 +279,11 @@ class PracticalBatteryAsset1(Dispatchable):
     install_cost : float
         Install cost in £/kWh
     """
-    def __init__(self, dt, T, capacity=36, power=6.6, eff=0.7, install_cost=(27000/36), nUsers=700):
+    def __init__(self, dt, T, capacity, power, eff, nUsers1, install_cost=(27000/36)):
         super().__init__()
-        self.nUsers = nUsers
+        self.nUsers1 = nUsers1
         self.asset_type = '1_LIFE_EV_BATTERY'
-        self.capacity = capacity * self.nUsers
+        self.capacity = capacity * self.nUsers1
         self.power = power * dt
         self.eff = eff
         self.soc = np.ones(T) * self.capacity
@@ -347,11 +347,11 @@ class PracticalBatteryAsset2(Dispatchable):
     install_cost : float
         Install cost in £/kWh
     """
-    def __init__(self, dt, T, capacity=0.8*36, power=6.6, eff=0.7, install_cost=500, nUsers=200):
+    def __init__(self, dt, T, capacity, power, eff, nUsers2, install_cost=500):
         super().__init__()
-        self.nUsers = nUsers
+        self.nUsers2 = nUsers2
         self.asset_type = '2_LIFE_EV_BATTERY'
-        self.capacity = capacity * self.nUsers
+        self.capacity = 0.8 * capacity * self.nUsers2
         self.power = power * dt
         self.eff = eff
         self.soc = np.ones(T) * self.capacity
@@ -410,9 +410,9 @@ class hydroAsset(Non_Dispatchable):
     maintenance_cost : float
         Annual maintenance cost in £s
     """
-    def __init__(self, capacity=450, profile_filepath='data/Sandford_hydro_generation_30_min_date.csv', maintenance=100000, **kwargs):
+    def __init__(self, hydroCapacity, profile_filepath='data/Sandford_hydro_generation_30_min_date.csv', maintenance=100000, **kwargs):
         super().__init__()
-        self.capacity = capacity
+        self.hydroCapacity = hydroCapacity
         self.asset_type = 'HYDRO'
         self.maintenance = maintenance * 100 # p per year
         self.genFiT = 5.24  # p/kWh     

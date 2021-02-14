@@ -38,15 +38,19 @@ non_dispatchable = []
 all_assets = []
 
 # PV Generation
-pv_site1 = AS.pvAsset()
+pvCapacity = 4
+pvInstallations = 1500
+pv_site1 = AS.pvAsset(pvCapacity, pvInstallations)
 non_dispatchable.append(pv_site1)
 
 # Hydro Generation
-hydro_site1 = AS.hydroAsset()
+hydroCapacity = 450
+hydro_site1 = AS.hydroAsset(hydroCapacity)
 non_dispatchable.append(hydro_site1)
 
 # Load
-load_site1 = AS.loadAsset() # domestic load
+nHouseholds = 1700
+load_site1 = AS.loadAsset(nHouseholds) # domestic load
 non_dispatchable.append(load_site1)
 
 #load_site2 = AS.ndAsset() # non-domestic load
@@ -56,9 +60,14 @@ non_dispatchable.append(load_site1)
 #non_dispatchable.append(load_site3)
 
 # Battery Storage
-battery_site1 = AS.PracticalBatteryAsset1(dt, T) # domestic battery storage - 1st life EVs
+capacity = 36
+power = 40
+eff = 0.7
+nUsers1 = 700
+nUsers2 = 200
+battery_site1 = AS.PracticalBatteryAsset1(dt, T, capacity, power, eff, nUsers1) # domestic battery storage - 1st life EVs
 dispatchable.append(battery_site1)
-battery_site2 = AS.PracticalBatteryAsset2(dt, T) # community battery storage - 2nd life EVs
+battery_site2 = AS.PracticalBatteryAsset2(dt, T, capacity, power, eff, nUsers2) # community battery storage - 2nd life EVs
 dispatchable.append(battery_site2)
 
 #######################################
@@ -70,7 +79,7 @@ all_assets = non_dispatchable + dispatchable
 # setup
 energy_system = ES.EnergySystem(non_dispatchable, dispatchable, dt, T)
 # run
-net_load = energy_system.basic_energy_balance()
+net_load, disp_load, non_disp_load= energy_system.basic_energy_balance()
 
 #######################################
 ### STEP 6: setup and run the market
@@ -103,29 +112,35 @@ ax[0][0].set_ylabel('Net Load')
 ax[0][0].set_xlabel('Time')
 ax[0][0].set_title('1')
 
-#ax[0][1].plot(x_axis[1:48], load_site1.getOutput[1:48])
-ax[0][1].set_ylabel('Domestic Load')
+ax[0][1].plot(x_axis[1:48], non_disp_load[1:48])
+ax[0][1].set_ylabel('Net Non-dispatchable Load')
+#ax[0][1].set_ylabel('Domestic Load')
 ax[0][1].set_xlabel('Time')
 ax[0][1].set_title('2')
 
-#ax[1][0].plot(battery_site1.output.T)
-ax[1][0].set_ylabel('PV Generation')
+ax[1][0].plot(x_axis[1:48], disp_load[1:48])
+ax[1][0].set_ylabel('Net Dispatchable')
+#ax[1][0].set_ylabel('PV Generation')
 ax[1][0].set_xlabel('Time')
 ax[1][0].set_title('3')
 
 #ax[1][1].plot(battery_site2.output.T)
-ax[1][1].set_ylabel('Non-domestic Load')
+#ax[1][1].set_ylabel('Non-domestic Load')
 ax[1][1].set_xlabel('Time')
 ax[1][1].set_title('4')
 
 #ax[0][2].plot(pv_site1.output.T)
-ax[2][0].set_ylabel('Hydro Generation')
+#ax[2][0].set_ylabel('Hydro Generation')
 ax[2][0].set_xlabel('Time')
 ax[2][0].set_title('6')
 
 #ax[1][2].plot(all_assets)
-ax[2][1].set_ylabel('Heat Pump Load')
+#ax[2][1].set_ylabel('Heat Pump Load')
 ax[2][1].set_xlabel('Time')
 ax[2][1].set_title('6')
 
+#print('mine')
+#print(pd.date_range(start=datetime.datetime(year=2018,month=1,day=1,hour=0,minute=0), periods=48, freq='0.5H'))
+#print('theirs')
+#print(pd.date_range(datetime.datetime(2017,1,1), datetime.datetime(2017, 12, 31, 23, 59, 59), freq='0.5H'))
 plt.show()
