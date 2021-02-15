@@ -80,6 +80,7 @@ class EnergySystem:
 
         self.net_load = net_load
         self.disp_load = net_load - net_nondis #?
+        
         disp_load = self.disp_load
         non_disp_load = self.non_disp_load
 

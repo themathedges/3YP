@@ -39,7 +39,7 @@ all_assets = []
 
 # PV Generation
 pvCapacity = 4
-pvInstallations = 1500
+pvInstallations = 10000#1500
 pv_site1 = AS.pvAsset(pvCapacity, pvInstallations)
 non_dispatchable.append(pv_site1)
 
@@ -61,7 +61,7 @@ non_dispatchable.append(load_site1)
 
 # Battery Storage
 capacity = 36
-power = 40
+power = 50#6.6
 eff = 0.7
 nUsers1 = 700
 nUsers2 = 200

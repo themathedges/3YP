@@ -347,7 +347,7 @@ class PracticalBatteryAsset2(Dispatchable):
     install_cost : float
         Install cost in £/kWh
     """
-    def __init__(self, dt, T, capacity, power, eff, nUsers2, install_cost=500):
+    def __init__(self, dt, T, capacity, power, eff, nUsers2, install_cost=(500/(36*0.8))):
         super().__init__()
         self.nUsers2 = nUsers2
         self.asset_type = '2_LIFE_EV_BATTERY'
