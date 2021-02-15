@@ -19,12 +19,12 @@ class EnergySystem:
     ----------
     nondispat : list
         List of non-dispatchable asset objects 
-        i.e. loadAsset, pvAsset
+        i.e. loadAsset, pvAsset, hydroAsset, hpAsset
 
     dispat : list
         List of dispatchable assets. The order of which determines control
         strategy in basic energy balance.
-        i.e. PracticalBatteryAsset, hydroAsset
+        i.e. PracticalBatteryAsset
 
     dt : float
         time step
@@ -51,7 +51,7 @@ class EnergySystem:
         net_load : Array
             The net load of the system.
         """
-        nondispat = self.nondispat  # nondispatcable asset list
+        nondispat = self.nondispat  # nondispatchable asset list
         dispat = self.dispat  # dispatchable asset list
 
         # sum non-dispatchable assets
@@ -59,8 +59,14 @@ class EnergySystem:
         for i, asset in enumerate(nondispat):
             if asset.asset_type == 'DOMESTIC_LOAD':
                 profile = nondispat[i].getOutput(self.dt)
+            #elif asset.asset_type == 'HEAT_PUMP_LOAD':
+                #profile = nondispat[i].getOutput(self.dt)
+            #elif asset.asset_type == 'NON_DOMESTIC_LOAD':
+                #profile = nondispat[i].getOutput(self.dt)
             elif asset.asset_type == 'PV':
-                profile = -1 * nondispat[i].getOutput(self.dt)  # might want -1 inside asset 
+                profile = -1 * nondispat[i].getOutput(self.dt)  # -1 x generation assets!
+            elif asset.asset_type == 'HYDRO':
+                profile = -1 * nondispat[i].getOutput(self.dt)
 
             net_nondis += profile
 
