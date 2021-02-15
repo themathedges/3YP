@@ -149,8 +149,8 @@ class loadAsset(Non_Dispatchable):
         -------
         Domestic demand : numpy array
         """
-        dem = self.profile.values
-        output = dem * self.nHouses * dt # kWh
+        dem = self.profile.values   # this will return the 365*48 values in the load profile at a numpy array 
+        output = dem * self.nHouses * dt # kWh 
         self.output = output
         print('domestic load output coming...')
         print(output)
