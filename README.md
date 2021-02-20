@@ -81,9 +81,7 @@ Number of installations = 200
 
 
 ### Data
-
 #### Sandford Hydro
-<br />
- gen_2050_export_df_v1.csv : version 1 of 2050 Sandford Hydro Generation Data predicted from linear regression model
-<br />
+gen_2050_export_df_v1.csv : version 1 of 2050 Sandford Hydro Generation Data predicted from linear regression model
+
 
