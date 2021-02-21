@@ -121,7 +121,7 @@ class loadAsset(Non_Dispatchable):
     profile_filepath : str
         Filepath to load profile
     """
-    def __init__(self, nHouseholds, profile_filepath='data/oxon_class1_year_load.csv', **kwargs):
+    def __init__(self, nHouseholds=1728, profile_filepath='data/ken_dom_annual_demand_per_user.csv', **kwargs):
         super().__init__()
         self.nHouseholds = nHouseholds
         self.asset_type = 'DOMESTIC_LOAD'
@@ -157,7 +157,7 @@ class loadAsset(Non_Dispatchable):
         return output
 
 
-#class ndAsset(Non_Dispatchable):
+class ndAsset(Non_Dispatchable):
     #"""
     #Load asset class
 
@@ -168,8 +168,8 @@ class loadAsset(Non_Dispatchable):
         
     #profile_filepath : str
         #Filepath to load profile
-    """
-    def __init__(self, nInstallations=?, profile_filepath='data/?', **kwargs):
+    
+    def __init__(self, nInstallations=36, profile_filepath='data/ken_non_dom_annual_demand_per_user.csv', **kwargs):
         super().__init__()
         self.nInstallations = nInstallations
         self.asset_type = 'NON_DOMESTIC_LOAD'
@@ -203,7 +203,7 @@ class loadAsset(Non_Dispatchable):
         print('non-domestic load output coming...')
         print(output)
         return output
-    """
+    
 
 
 #class hpAsset(Dispatchable):
