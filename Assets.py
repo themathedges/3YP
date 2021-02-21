@@ -150,7 +150,7 @@ class loadAsset(Non_Dispatchable):
         Domestic demand : numpy array
         """
         dem = self.profile.values   # this will return the 365*48 values in the load profile at a numpy array 
-        output = dem * self.nHouses * dt # kWh 
+        output = dem * self.nHouseholds * dt # kWh 
         self.output = output
         print('domestic load output coming...')
         print(output)
@@ -347,7 +347,7 @@ class PracticalBatteryAsset2(Dispatchable):
     install_cost : float
         Install cost in £/kWh
     """
-    def __init__(self, dt, T, capacity, power, eff, nUsers2, install_cost=500):
+    def __init__(self, dt, T, capacity, power, eff, nUsers2, install_cost=(500/(36*0.8))):
         super().__init__()
         self.nUsers2 = nUsers2
         self.asset_type = '2_LIFE_EV_BATTERY'
