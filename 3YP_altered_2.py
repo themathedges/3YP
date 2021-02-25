@@ -12,14 +12,12 @@ __version__ = '0.4'
 # import modules
 import numpy as np
 import matplotlib.pyplot as plt
-import pandas as pd
-import matplotlib.dates as mdates
-import datetime
-from pandas import Timestamp
 
 import Assets as AS
 import EnergySystem as ES
 import Market as MK
+import Averaging as AV
+import Plotting as PT
 
 
 #######################################
@@ -51,7 +49,7 @@ hydroCapacity = 450 # this parameter is not actually used in this asset's object
 hydro_site1 = AS.hydroAsset(hydroCapacity)
 non_dispatchable.append(hydro_site1)
 
-# Load
+# Loads
 nHouseholds = 1700
 load_site1 = AS.loadAsset(nHouseholds) # domestic load
 non_dispatchable.append(load_site1)
@@ -112,13 +110,35 @@ sold_daily = ES.E_to_dailyE(sold, dt) / 100            # convert to pounds
 #######################################
 
 
-pv_list1 = [i[0] for i in pv_site1.getOutput(dt).tolist()]           # plot pv generation 
-hydro_list1 = [i[0] for i in hydro_site1.getOutput(dt).tolist()]     # plot hydro generation
-load_list1 = [i[0] for i in load_site1.getOutput(dt).tolist()]       # plot domestic demand
-#load_list2 = [i[0] for i in load_site2.getOutput(dt).tolist()]       # plot non-domestic demand
-#load_list3 = [i[0] for i in load_site3.getOutput(dt).tolist()]       # plot heat pump electricity demand
-battery_list1 = [i[0] for i in battery_site1.getOutput(net_load).tolist()] # domestic battery storage
-battery_list2 = [i[0] for i in battery_site2.getOutput(net_load).tolist()] # community battery storage
+net_load = [i[0] for i in net_load.tolist()]                        # average net load
+net_load_means = AV.Averaging(net_load)
+
+disp_load = [i[0] for i in disp_load.tolist()]                      # average net dispatchable load
+disp_load_means = AV.Averaging(disp_load)                   
+
+non_disp_load = [i[0] for i in non_disp_load.tolist()]              # average net non-dispatchable load
+non_disp_load_means = AV.Averaging(non_disp_load)
+
+pv = [i[0] for i in pv_site1.getOutput(dt).tolist()]                # average pv generation 
+pv_means = AV.Averaging(pv)
+
+hydro = [i[0] for i in hydro_site1.getOutput(dt).tolist()]          # average hydro generation
+hydro_means = AV.Averaging(hydro)
+
+dom = [i[0] for i in load_site1.getOutput(dt).tolist()]             # average domestic demand
+dom_means = AV.Averaging(dom)
+
+#nondom = [i[0] for i in load_site2.getOutput(dt).tolist()]          # average non-domestic demand
+#nondom_means = AV.Averaging(nondom)
+
+#hp = [i[0] for i in load_site3.getOutput(dt).tolist()]              # average heat pump electricity demand
+#hp_means = AV.Averaging(hp)
+
+dombat = [i[0] for i in battery_site1.getOutput(net_load).tolist()] # average domestic battery storage
+dombat_means = AV.Averaging(dombat)
+
+combat = [i[0] for i in battery_site2.getOutput(net_load).tolist()] # average community battery storage
+combat_means = AV.Averaging(combat)
 
 
 #######################################
@@ -126,57 +146,25 @@ battery_list2 = [i[0] for i in battery_site2.getOutput(net_load).tolist()] # com
 #######################################
 
 
-# plot data together, this only plots the 1st day in the year
-fig,ax =  plt.subplots(nrows=4,ncols=2,sharex=True,sharey=False)
-fig.tight_layout(pad=3.0)
+# 1st 5th of the year
+fig1 = PT.Plotting(net_load_means[0], disp_load_means[0], non_disp_load_means[0], pv_means[0], hydro_means[0], dom_means[0], dombat_means[0], combat_means[0])
+fig1.canvas.set_window_title('1st Jan - 14th Mar')
 
-x_axis = pd.date_range(datetime.datetime(2017,1,1), datetime.datetime(2017, 12, 31, 23, 59, 59), freq='0.5H')
+# 2nd 5th of the year
+fig2 = PT.Plotting(net_load_means[1], disp_load_means[1], non_disp_load_means[1], pv_means[1], hydro_means[1], dom_means[1], dombat_means[1], combat_means[1])
+fig2.canvas.set_window_title('15th Mar - 26th May')
 
-ax[0][0].plot(x_axis[1:48], net_load[1:48])
-ax[0][0].set_ylabel('Net Load, kWh')
-ax[0][0].set_xlabel('Time')
-ax[0][0].set_title('1')
+# 3rd 5th of the year
+fig3 = PT.Plotting(net_load_means[2], disp_load_means[2], non_disp_load_means[2], pv_means[2], hydro_means[2], dom_means[2], dombat_means[2], combat_means[2])
+fig3.canvas.set_window_title('27th May - 7th Aug')
 
-ax[0][1].plot(x_axis[1:48], non_disp_load[1:48])
-ax[0][1].set_ylabel('Net Non-dispatchable Load, kWh')
-ax[0][1].set_xlabel('Time')
-ax[0][1].set_title('2')
+# 4th 5th of the year
+fig4 = PT.Plotting(net_load_means[3], disp_load_means[3], non_disp_load_means[3], pv_means[3], hydro_means[3], dom_means[3], dombat_means[3], combat_means[3])
+fig4.canvas.set_window_title('8th Aug - 19th Oct')
 
-ax[1][0].plot(x_axis[1:48], disp_load[1:48])
-ax[1][0].set_ylabel('Net Dispatchable, kWh')
-ax[1][0].set_xlabel('Time')
-ax[1][0].set_title('3')
-
-ax[1][1].plot(x_axis[1:48], battery_list1[1:48])
-ax[1][1].set_ylabel('Domestic Battery, kWh')
-ax[1][1].set_xlabel('Time')
-ax[1][1].set_title('4')
-
-ax[2][0].plot(x_axis[1:48], load_list1[1:48])
-ax[2][0].set_ylabel('Domestic Load, kWh')
-ax[2][0].set_xlabel('Time')
-ax[2][0].set_title('5')
-
-ax[2][1].plot(x_axis[1:48], battery_list2[1:48])
-ax[2][1].set_ylabel('Community Battery, kWh')
-ax[2][1].set_xlabel('Time')
-ax[2][1].set_title('6')
-
-ax[3][0].plot(x_axis[1:48], pv_list1[1:48])
-ax[3][0].set_ylabel('PV Generation, kWh')
-ax[3][0].set_xlabel('Time')
-ax[3][0].set_title('7')
-
-ax[3][1].plot(x_axis[1:48], hydro_list1[1:48])
-ax[3][1].set_ylabel('Hydro Generation, kWh')
-ax[3][1].set_xlabel('Time')
-ax[3][1].set_title('8')
-
+# 5th 5th of the year
+fig5 = PT.Plotting(net_load_means[4], disp_load_means[4], non_disp_load_means[4], pv_means[4], hydro_means[4], dom_means[4], dombat_means[4], combat_means[4])
+fig5.canvas.set_window_title('20th Oct - 31st Dec') 
 
 plt.show()
 
-# ignore
-#print('mine')
-#print(pd.date_range(start=datetime.datetime(year=2018,month=1,day=1,hour=0,minute=0), periods=48, freq='0.5H'))
-#print('theirs')
-#print(pd.date_range(datetime.datetime(2017,1,1), datetime.datetime(2017, 12, 31, 23, 59, 59), freq='0.5H'))

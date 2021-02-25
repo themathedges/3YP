@@ -75,9 +75,9 @@ class pvAsset(Non_Dispatchable):
         """
         df = pd.read_csv(self.profile_filepath, index_col=0,
                          parse_dates=True, dayfirst=True)  # kW/kWp
-        print('original solar data coming...')
-        print(df.info())
-        print(df.head(50))
+        #print('original solar data coming...')
+        #print(df.info())
+        #print(df.head(50))
         return df  
 
     def getOutput(self, dt):
@@ -99,13 +99,13 @@ class pvAsset(Non_Dispatchable):
                                       index=[(cfHH.index[-1] +
                                               timedelta(minutes=30))]))
         cfHH = cfHH.interpolate()
-        print('modified solar data coming...')
-        print(cfHH.info())
-        print(cfHH.head(50))
+        #print('modified solar data coming...')
+        #print(cfHH.info())
+        #print(cfHH.head(50))
         output = cfHH.values * self.pvCapacity * self.pvInstallations * dt # kWh
         self.output = output
-        print('solar output coming...')
-        print(output)
+        #print('solar output coming...')
+        #print(output)
         return output
 
 
@@ -132,9 +132,9 @@ class loadAsset(Non_Dispatchable):
         
     def loadProfile(self):
         df = pd.read_csv(self.profile_filepath, usecols=[1]) # kW
-        print('domestic load data coming...')
-        print(df.info())
-        print(df.head(50))
+        #print('domestic load data coming...')
+        #print(df.info())
+        #print(df.head(50))
         return df
         
     def getOutput(self, dt):
@@ -153,8 +153,8 @@ class loadAsset(Non_Dispatchable):
         dem = self.profile.values   # this will return the 365*48 values in the load profile at a numpy array 
         output = dem * self.nHouseholds * dt # kWh 
         self.output = output
-        print('domestic load output coming...')
-        print(output)
+        #print('domestic load output coming...')
+        #print(output)
         return output
 
 
@@ -423,9 +423,9 @@ class hydroAsset(Non_Dispatchable):
     def hydroProfile(self):
         df = pd.read_csv(self.profile_filepath, usecols=[1], 
                          parse_dates=True, dayfirst=True) # kW
-        print('hydro data coming...')
-        print(df.info())
-        print(df.head(50))
+        #print('hydro data coming...')
+        #print(df.info())
+        #print(df.head(50))
         return df 
 
     def getOutput(self, dt):
@@ -444,8 +444,8 @@ class hydroAsset(Non_Dispatchable):
         gen = self.profile.values
         output = gen * dt # kWh
         self.output = output
-        print('hydro output coming...')
-        print(output)
+        #print('hydro output coming...')
+        #print(output)
         return output
 
 if __name__ == "__main__":

@@ -54,33 +54,25 @@ class EnergySystem:
         nondispat = self.nondispat  # nondispatchable asset list
         dispat = self.dispat  # dispatchable asset list
 
-        # lists to store output of each asset object
-        domestic_load = []
-        #heat_pump_load = []
-        #non_domestic_load = []
-        pv = []
-        hydro = []
-        total_battery_storage = []
-
 
         # sum non-dispatchable assets
         net_nondis = np.zeros((self.T, 1))
         for i, asset in enumerate(nondispat):
             if asset.asset_type == 'DOMESTIC_LOAD':
                 profile = nondispat[i].getOutput(self.dt)
-                domestic_load.append(profile)
+            
             #elif asset.asset_type == 'HEAT_PUMP_LOAD': # waiting for steven
                 #profile = nondispat[i].getOutput(self.dt)
-                #heat_pump_load.append(profile)
+              
             #elif asset.asset_type == 'NON_DOMESTIC_LOAD': # waiting for minnie
                 #profile = nondispat[i].getOutput(self.dt)
-                #non_domestic_load.append(profile)
+               
             elif asset.asset_type == 'PV':
                 profile = -1 * nondispat[i].getOutput(self.dt)  # -1 x generation asset
-                pv.append(profile)
+               
             elif asset.asset_type == 'HYDRO':
                 profile = -1 * nondispat[i].getOutput(self.dt)  # -1 x generation asset
-                hydro.append(profile.tolist())
+             
 
             net_nondis = net_nondis + profile
 
@@ -92,7 +84,6 @@ class EnergySystem:
         # deploy dispatchable gen
         for i, asset in enumerate(dispat):
             profile = asset.getOutput(net_load) # surplus load is dispatched to the batteries
-            total_battery_storage.append(profile)
             net_load = net_load - profile
 
 
@@ -104,15 +95,7 @@ class EnergySystem:
         non_disp_load = self.non_disp_load
 
 
-        self.domestic_load = domestic_load
-        #self.heat_pump_load = heat_pump_load
-        #self.non_domestic_load = non_domestic_load
-        self.pv = pv
-        self.hydro = hydro
-        self.total_battery_storage = total_battery_storage
-
-
-        return net_load, disp_load, non_disp_load, domestic_load, pv, hydro, total_battery_storage
+        return net_load, disp_load, non_disp_load
 
 
 def E_to_dailyE(data, dt):
