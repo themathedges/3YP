@@ -19,8 +19,8 @@ col 4: System buy/sell price £/MWh
 
 col 5: Net imbalance volume MWh
 
-### ken_dom_annual_demand_per_user.csv
+### ken_dom_annual_demand_per_household.csv
 Half hourly power (kW) from domestic demand of an average houshold in Kennington over the period of one year.
 
-### ken_dom_annual_demand_per_user.csv
-Half hourly demand profile (kW) for an average non-domestic user in Kennington 
+### ken_non_dom_annual_demand_per_user.csv
+Half hourly demand profile (kW) for an average non-domestic user in Kennington (eg a cafe, shop etc)
