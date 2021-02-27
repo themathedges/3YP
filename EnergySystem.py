@@ -64,8 +64,8 @@ class EnergySystem:
             #elif asset.asset_type == 'HEAT_PUMP_LOAD': # waiting for steven
                 #profile = nondispat[i].getOutput(self.dt)
               
-            #elif asset.asset_type == 'NON_DOMESTIC_LOAD': # waiting for minnie
-                #profile = nondispat[i].getOutput(self.dt)
+            elif asset.asset_type == 'NON_DOMESTIC_LOAD': # waiting for minnie
+                profile = nondispat[i].getOutput(self.dt)
                
             elif asset.asset_type == 'PV':
                 profile = -1 * nondispat[i].getOutput(self.dt)  # -1 x generation asset
