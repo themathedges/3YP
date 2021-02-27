@@ -121,8 +121,7 @@ class loadAsset(Non_Dispatchable):
     profile_filepath : str
         Filepath to load profile
     """
-    #def __init__(self, nHouseholds=1728, profile_filepath='data/ken_dom_annual_demand_per_user.csv', **kwargs):    # i've just commented this out while I am fixing the dataset
-    def __init__(self, nHouseholds, profile_filepath='data/oxon_class1_year_load.csv', **kwargs):    
+    def __init__(self, nHouseholds, profile_filepath='data/ken_dom_annual_demand_per_household.csv', **kwargs):    
         super().__init__()
         self.nHouseholds = nHouseholds
         self.asset_type = 'DOMESTIC_LOAD'
@@ -150,7 +149,7 @@ class loadAsset(Non_Dispatchable):
         -------
         Domestic demand : numpy array
         """
-        dem = self.profile.values   # this will return the 365*48 values in the load profile at a numpy array 
+        dem = self.profile.values   # this will return the 365*48 values in the load profile as a numpy array 
         output = dem * self.nHouseholds * dt # kWh 
         self.output = output
         #print('domestic load output coming...')
@@ -158,7 +157,7 @@ class loadAsset(Non_Dispatchable):
         return output
 
 
-#class ndAsset(Non_Dispatchable):
+class ndAsset(Non_Dispatchable):
     #"""
     #Load asset class
 
@@ -169,8 +168,8 @@ class loadAsset(Non_Dispatchable):
         
     #profile_filepath : str
         #Filepath to load profile
-    """
-    def __init__(self, nInstallations=36, profile_filepath='data/ken_non_dom_annual_demand_per_user.csv', **kwargs):
+  
+    def __init__(self, nInstallations, profile_filepath='data/ken_non_dom_annual_demand_per_user.csv', **kwargs):
         super().__init__()
         self.nInstallations = nInstallations
         self.asset_type = 'NON_DOMESTIC_LOAD'
@@ -180,9 +179,9 @@ class loadAsset(Non_Dispatchable):
         
     def ndProfile(self):
         df = pd.read_csv(self.profile_filepath, usecols=[1]) # kW
-        print('non-domestic load data coming...')
-        print(df.info())
-        print(df.head(50))
+        #print('non-domestic load data coming...')
+        #print(df.info())
+        #print(df.head(50))
         return df
         
     def getOutput(self, dt):
@@ -204,7 +203,7 @@ class loadAsset(Non_Dispatchable):
         print('non-domestic load output coming...')
         print(output)
         return output
-    """
+    
 
 
 #class hpAsset(Dispatchable):

@@ -11,6 +11,9 @@ __version__ = '0.4'
 
 # import modules
 import numpy as np
+import pandas as pd
+import datetime
+import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 
 import Assets as AS
@@ -34,7 +37,7 @@ T = int((24 * 365) / dt)  # Number of intervals per year
 #######################################
 
 
-dispatchable = []
+dispatchable = []    
 non_dispatchable = []
 all_assets = []
 
@@ -50,12 +53,13 @@ hydro_site1 = AS.hydroAsset(hydroCapacity)
 non_dispatchable.append(hydro_site1)
 
 # Loads
-nHouseholds = 1700
+nHouseholds = 1728
 load_site1 = AS.loadAsset(nHouseholds) # domestic load
 non_dispatchable.append(load_site1)
 
-#load_site2 = AS.ndAsset()              # non-domestic load- waiting for minnie
-#non_dispatchable.append(load_site2)
+nBusinesses = 36
+load_site2 = AS.ndAsset(nBusinesses)              # non-domestic load- waiting for minnie
+non_dispatchable.append(load_site2)
 
 #load_site3 = AS.hpAsset()              # heat pump electricity demand- waiting for steven
 #non_dispatchable.append(load_site3)
@@ -109,7 +113,7 @@ sold_daily = ES.E_to_dailyE(sold, dt) / 100            # convert to pounds
 ### STEP 7: prepare lists for plotting
 #######################################
 
-
+# net_load_means will be 5 lists. Each list contains the data for an averaged profile of net load over 1/5th of the year
 net_load = [i[0] for i in net_load.tolist()]                        # average net load
 net_load_means = AV.Averaging(net_load)
 
@@ -128,8 +132,8 @@ hydro_means = AV.Averaging(hydro)
 dom = [i[0] for i in load_site1.getOutput(dt).tolist()]             # average domestic demand
 dom_means = AV.Averaging(dom)
 
-#nondom = [i[0] for i in load_site2.getOutput(dt).tolist()]          # average non-domestic demand
-#nondom_means = AV.Averaging(nondom)
+nondom = [i[0] for i in load_site2.getOutput(dt).tolist()]          # average non-domestic demand
+nondom_means = AV.Averaging(nondom)
 
 #hp = [i[0] for i in load_site3.getOutput(dt).tolist()]              # average heat pump electricity demand
 #hp_means = AV.Averaging(hp)
@@ -146,7 +150,7 @@ combat_means = AV.Averaging(combat)
 #######################################
 
 
-# 1st 5th of the year
+# 1st 5th of the year <-- this is plotting a average profiles found over the dates 1st Jan-14th March ~ the "Average.py" function finds the values for these average profiles over this period
 fig1 = PT.Plotting(net_load_means[0], disp_load_means[0], non_disp_load_means[0], pv_means[0], hydro_means[0], dom_means[0], dombat_means[0], combat_means[0])
 fig1.canvas.set_window_title('1st Jan - 14th Mar')
 
@@ -165,6 +169,24 @@ fig4.canvas.set_window_title('8th Aug - 19th Oct')
 # 5th 5th of the year
 fig5 = PT.Plotting(net_load_means[4], disp_load_means[4], non_disp_load_means[4], pv_means[4], hydro_means[4], dom_means[4], dombat_means[4], combat_means[4])
 fig5.canvas.set_window_title('20th Oct - 31st Dec') 
+
+
+
+## plot non-domestic profile <-- I can encorporate the non-dom profile into the subplot later. I just plotted it as a seperate figure here to check it was the correct shape
+# fig,ax = plt.subplots()
+# plt.xticks(rotation=90)
+# fig.tight_layout(pad=3.0)
+
+# x_axis = pd.date_range('2018' + '-01-01', periods = 48, freq= '0.5H') 
+# myFmt = mdates.DateFormatter('%H:%M')   # format the times into Hour:Minute format
+# plt.gcf().autofmt_xdate()               # automatic rotation of the axis plots
+
+# ax.plot(x_axis, nondom_means[0])
+# ax.set_ylabel('kWh')
+# ax.set_xlabel('Time')
+# ax.set_title('Non-Domestic Load')
+# ax.xaxis.set_major_formatter(myFmt)   # apply HH:MM format to the x axis data
+
 
 plt.show()
 
