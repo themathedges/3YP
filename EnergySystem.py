@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
 """
 3YP basic Energy System module.
 Adapted from UoO EPG's energy management framework.
-Authors: Avinash Vijay, Scot Wheeler
+Authors: Avinash Vijay, Scot Wheeler, Mathew Hedges
 """
 
 __version__ = '0.4'
 
+# import modules
 import numpy as np
 
 
@@ -37,8 +39,8 @@ class EnergySystem:
         self.nondispat = nondispat
         self.dispat = dispat
         self.assets = nondispat + dispat
-        self.dt = dt  # time interval duration
-        self.T = T  # number of time intervals
+        self.dt = dt  
+        self.T = T    
 
     def basic_energy_balance(self):
         """
@@ -51,8 +53,8 @@ class EnergySystem:
         net_load : Array
             The net load of the system.
         """
-        nondispat = self.nondispat  # nondispatchable asset list
-        dispat = self.dispat  # dispatchable asset list
+        nondispat = self.nondispat                              # nondispatchable asset list
+        dispat = self.dispat                                    # dispatchable asset list
 
 
         # sum non-dispatchable assets
@@ -63,12 +65,18 @@ class EnergySystem:
             
             #elif asset.asset_type == 'HEAT_PUMP_LOAD': # waiting for steven
                 #profile = nondispat[i].getOutput(self.dt)
+
+            #elif asset.asset_type == 'EV_LOAD': # waiting for Minnie
+                #profile = nondispat[i].getOutput(self.dt)
               
-            elif asset.asset_type == 'NON_DOMESTIC_LOAD': # waiting for minnie
+            elif asset.asset_type == 'NON_DOMESTIC_LOAD': 
                 profile = nondispat[i].getOutput(self.dt)
                
             elif asset.asset_type == 'PV':
                 profile = -1 * nondispat[i].getOutput(self.dt)  # -1 x generation asset
+
+            #elif asset.asset_type == 'SF':
+                #profile = -1 * nondispat[i].getOutput(self.dt)  # -1 x generation asset
                
             elif asset.asset_type == 'HYDRO':
                 profile = -1 * nondispat[i].getOutput(self.dt)  # -1 x generation asset
@@ -77,18 +85,18 @@ class EnergySystem:
             net_nondis = net_nondis + profile
 
 
-        self.non_disp_load = net_nondis # returns the net non-dispatchable load
+        self.non_disp_load = net_nondis                         # returns net non-dispatchable load
         net_load = net_nondis
 
 
         # deploy dispatchable gen
         for i, asset in enumerate(dispat):
-            profile = asset.getOutput(net_load) # surplus load is dispatched to the batteries
+            profile = asset.getOutput(net_load)                 # surplus load is dispatched to the batteries
             net_load = net_load - profile
 
 
         self.net_load = net_load
-        self.disp_load = net_load - net_nondis # returns net dispatachable load???
+        self.disp_load = net_load - net_nondis                  # returns net dispatachable load
 
 
         disp_load = self.disp_load
@@ -103,6 +111,6 @@ def E_to_dailyE(data, dt):
 
     return daily_sum
 
+
 if __name__ == "__main__":
     pass
-

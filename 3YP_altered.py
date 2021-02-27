@@ -4,7 +4,7 @@
 """
 3YP altered file.
 Adapted from UoO EPG's energy management framework.
-Authors: Avinash Vijay, Scot Wheeler
+Authors: Avinash Vijay, Scot Wheeler, Mathew Hedges
 """
 
 __version__ = '0.4'

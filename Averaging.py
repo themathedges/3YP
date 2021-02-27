@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Basic averaging file
+Basic averaging file.
 The output of each asset y, in halfhours over the whole year,
 is split into 5 consecutive blocks. These are entered into numpy
 arrays x in which the rows represent consecutive days in that
@@ -42,34 +42,36 @@ def Averaging(asset_list):
     for i in range(73): 
         x1[i] = y1[i*48:(i+1)*48] # put each day's half hours into the rows of x
     
-    mean1 = np.mean(x1, axis=0) # find the mean of the halfhours over every day
+    mean1 = np.mean(x1, axis=0)   # find the mean of the halfhours over every day
 
 
     for i in range(73):
         x2[i] = y2[i*48:(i+1)*48] # put each day's half hours into the rows of x
   
-    mean2 = np.mean(x2, axis=0) # find the mean of the halfhours over every day
+    mean2 = np.mean(x2, axis=0)   # find the mean of the halfhours over every day
 
 
     for i in range(73):
         x3[i] = y3[i*48:(i+1)*48] # put each day's half hours into the rows of x
     
-    mean3 = np.mean(x3, axis=0) # find the mean of the halfhours over every day
+    mean3 = np.mean(x3, axis=0)   # find the mean of the halfhours over every day
 
 
     for i in range(73):
         x4[i] = y4[i*48:(i+1)*48] # put each day's half hours into the rows of x
     
-    mean4 = np.mean(x4, axis=0) # find the mean of the halfhours over every day
+    mean4 = np.mean(x4, axis=0)   # find the mean of the halfhours over every day
 
 
     for i in range(72):
         x5[i] = y5[i*48:(i+1)*48] # put each day's half hours into the rows of x
     
-    mean5 = np.mean(x5, axis=0) # find the mean of the halfhours over every day
+    mean5 = np.mean(x5, axis=0)   # find the mean of the halfhours over every day
 
-    
-    return [mean1, mean2, mean3, mean4, mean5] # return a list of 5 means
+
+    # return a list of 5 means
+    return [mean1, mean2, mean3, mean4, mean5] 
+
 
 if __name__ == "__main__":
     pass

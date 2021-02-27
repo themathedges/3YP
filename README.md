@@ -22,15 +22,29 @@ Installation cost = £6,000
 <br />
 Number of installations = 1500 (number of houses in Kennington)
 
-### Domestic Energy Demand - loadAsset
+### Solar PV Farm - sfAsset
+Dataset: data/oxon_solar_2014.csv ???
+<br />
+Peak power output = 4 kWp ???
+<br />
+Annual maintenance = £100 ???
+<br />
+Installation cost = £6,000 ???
+<br />
+Number of panels = ???
+
+### Domestic Electricity Demand - loadAsset
 Dataset: data/oxon_class1_year_load.csv
 <br />
 Number of installations = 1700 (number of households in Kennington)
 
-### Non-domestic Energy Demand - ndAsset
+### Non-Domestic Electricity Demand - ndAsset
 Dataset: ?
 
-### Water Source Heat Pump System - hpAsset
+### Electric Vehicle Electricity Demand - evAsset
+Dataset: ?
+
+### Water-Source Heat Pump System - hpAsset
 Dataset: ?
 <br />
 Power input = ?
@@ -79,11 +93,10 @@ Number of installations = 200
 
 <br />
 
+## Datasets
 
-## Data
-#### Sandford Hydro
+### Sandford Hydro
 gen_2050_export_df_v1.csv : version 1 of 2050 Sandford Hydro Generation Data predicted from linear regression model
-
 
 ### Outgoing Tariff
 octopus_outgoing_2018_SE.csv : 2018 data for Octopus Outgoing tariff (pence/kWh) for the South East of UK. Data obtained from <a href="https://octopus.energy/blog/outgoing/">Octopus outgoing</a>
