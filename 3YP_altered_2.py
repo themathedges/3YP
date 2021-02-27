@@ -5,7 +5,7 @@
 3YP altered file.
 Adapted from UoO EPG's energy management framework.
 Authors: Avinash Vijay, Scot Wheeler, Mathew Hedges,
-Minnie Karanjavala, Ravi Kohli, Steven Jones
+Minnie Karanjavala, Ravi Kohli
 """
 
 __version__ = '0.4'
