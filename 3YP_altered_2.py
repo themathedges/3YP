@@ -173,19 +173,20 @@ fig5.canvas.set_window_title('20th Oct - 31st Dec')
 
 
 ## plot non-domestic profile <-- I can encorporate the non-dom profile into the subplot later. I just plotted it as a seperate figure here to check it was the correct shape
-# fig,ax = plt.subplots()
-# plt.xticks(rotation=90)
-# fig.tight_layout(pad=3.0)
+fig,ax = plt.subplots()
+plt.xticks(rotation=90)
+fig.tight_layout(pad=3.0)
 
-# x_axis = pd.date_range('2018' + '-01-01', periods = 48, freq= '0.5H') 
-# myFmt = mdates.DateFormatter('%H:%M')   # format the times into Hour:Minute format
-# plt.gcf().autofmt_xdate()               # automatic rotation of the axis plots
+x_axis = pd.date_range('2018' + '-01-01', periods = 48, freq= '0.5H') 
+myFmt = mdates.DateFormatter('%H:%M')   # format the times into Hour:Minute format
+plt.gcf().autofmt_xdate()               # automatic rotation of the axis plots
 
-# ax.plot(x_axis, nondom_means[0])
-# ax.set_ylabel('kWh')
-# ax.set_xlabel('Time')
-# ax.set_title('Non-Domestic Load')
-# ax.xaxis.set_major_formatter(myFmt)   # apply HH:MM format to the x axis data
+ax.plot(x_axis, nondom_means[0])
+ax.set_ylabel('kWh')
+ax.set_xlabel('Time')
+ax.set_title('Non-Domestic Load')
+ax.xaxis.set_major_formatter(myFmt)   # apply HH:MM format to the x axis data
+fig.canvas.set_window_title('1st Jan - 14th Mar')
 
 
 plt.show()
