@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
 """
 3YP basic asset module.
 Adapted from UoO EPG's energy management framework.
-Authors: Avinash Vijay, Scot Wheeler
+Authors: Avinash Vijay, Scot Wheeler, Mathew Hedges,
+Minnie Karanjavala, Ravi Kohli
 """
 
 __version__ = '0.4'
 
+# import modules
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -149,7 +152,7 @@ class loadAsset(Non_Dispatchable):
         -------
         Domestic demand : numpy array
         """
-        dem = self.profile.values   # this will return the 365*48 values in the load profile as a numpy array 
+        dem = self.profile.values   # this will return the 365*48 values in the dom load profile as a numpy array 
         output = dem * self.nHouseholds * dt # kWh 
         self.output = output
         #print('domestic load output coming...')
@@ -158,20 +161,25 @@ class loadAsset(Non_Dispatchable):
 
 
 class ndAsset(Non_Dispatchable):
-    #"""
-    #Load asset class
+    """
+    Non-domestic load asset class
 
-    #Parameters
-    #----------
-    #nInstallations : int
-        #Number of installations
+    Parameters
+    ----------
+    nBusiness : int
+        Number of businesses and schools etc.
         
-    #profile_filepath : str
-        #Filepath to load profile
+    profile_filepath : str
+        Filepath to load profile
+
+    Returns
+        -------
+        Non-domestic demand : numpy array
+    """
   
-    def __init__(self, nInstallations, profile_filepath='data/ken_non_dom_annual_demand_per_user.csv', **kwargs):
+    def __init__(self, nBusinesses, profile_filepath='data/ken_non_dom_annual_demand_per_user.csv', **kwargs):
         super().__init__()
-        self.nInstallations = nInstallations
+        self.nBusinesses = nBusinesses
         self.asset_type = 'NON_DOMESTIC_LOAD'
         self.install_cost = 0
         self.profile_filepath = profile_filepath
@@ -185,25 +193,74 @@ class ndAsset(Non_Dispatchable):
         return df
         
     def getOutput(self, dt):
-       
-        #Return non-domestic demand
+        """
+        Return non-domestic demand
+
+        Parameters
+        ----------
+        dt : float
+            Time interval (hours)
+
+        Returns
+        -------
+        Non-domestic demand : numpy array
+        """
+        dem = self.profile.values # this will return the 365*48 values in the nondom load profile as a numpy array 
+        output = dem * self.nBusinesses * dt # kWh
+        self.output = output
+        #print('non-domestic load output coming...')
+        #print(output)
+        return output
+    
+
+#class evAsset(Dispatchable):
+
+    #Electric Vehicle asset class
+
+    #Parameters
+    #----------
+    #nCars : int
+    #    Number of electric vehicles
+        
+    #profile_filepath : str
+    #    Filepath to load profile
+
+    """
+    def __init__(self, nCars, profile_filepath='?', **kwargs):
+        super().__init__()
+        self.nCars = nCars
+        self.asset_type = 'EV_LOAD'
+        self.install_cost = 0
+        self.profile_filepath = profile_filepath
+        self.profile = self.evProfile()
+        
+    def evProfile(self):
+        df = pd.read_csv(self.profile_filepath, usecols=[1]) # kW
+        print('electric vehicle load data coming...')
+        print(df.info())
+        print(df.head(50))
+        return df
+        
+    def getOutput(self, dt):
+    
+        #Return electric vehicle electricity demand
 
         #Parameters
         #----------
         #dt : float
-           # Time interval (hours)
+        #    Time interval (hours)
 
         #Returns
         #-------
-        #Non-domestic demand : numpy array
+        #Electric vehicle electricity demand : numpy array
         
-        dem = self.profile.values
-        output = dem * self.nInstallations * dt # kWh
+        ev = self.profile.values
+        output = ev * self.nCars * dt # kWh
         self.output = output
-        print('non-domestic load output coming...')
+        print('electric vehicle load output coming...')
         print(output)
         return output
-    
+    """
 
 
 #class hpAsset(Dispatchable):
@@ -219,9 +276,9 @@ class ndAsset(Non_Dispatchable):
     #    Filepath to load profile
 
     """
-    def __init__(self, nHouses=1700, profile_filepath='?', **kwargs):
+    def __init__(self, nHouseholds, profile_filepath='?', **kwargs):
         super().__init__()
-        self.nHouses = nHouses
+        self.nHouseholds = nHouseholds
         self.asset_type = 'HEAT_PUMP_LOAD'
         self.install_cost = 0
         self.profile_filepath = profile_filepath
@@ -248,12 +305,13 @@ class ndAsset(Non_Dispatchable):
         #Heat pump electricity demand : numpy array
         
         hp = self.profile.values
-        output = hp * self.nHouses * dt # kWh
+        output = hp * self.nHouseholds * dt # kWh
         self.output = output
         print('heat pump load output coming...')
         print(output)
         return output
     """
+
 
 class PracticalBatteryAsset1(Dispatchable):
     """
@@ -440,13 +498,13 @@ class hydroAsset(Non_Dispatchable):
         -------
         Sandford Hydro output : numpy array
         """
-        gen = self.profile.values
+        gen = self.profile.values # this will return the 365*48 values in the hydro profile as a numpy array 
         output = gen * dt # kWh
         self.output = output
         #print('hydro output coming...')
         #print(output)
         return output
 
+
 if __name__ == "__main__":
     pass
-

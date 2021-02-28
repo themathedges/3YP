@@ -1,4 +1,14 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+Coding practice and testing file.
+Author: Mathew Hedges
+"""
+
+# import modules
 import numpy as np
+
 
 y0 = np.ones((17520,1)) # a years worth of halfhours
 y1 = y0[0:3504] # 1/5th of a years worth of halfhours
