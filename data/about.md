@@ -27,3 +27,5 @@ Half hourly demand profile (kW) for an average non-domestic user in Kennington (
 
 Tester from Steven. 
 
+
+Tester from Minnie.
