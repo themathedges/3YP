@@ -24,3 +24,6 @@ Half hourly power (kW) from domestic demand of an average houshold in Kennington
 
 ### ken_non_dom_annual_demand_per_user.csv
 Half hourly demand profile (kW) for an average non-domestic user in Kennington (eg a cafe, shop etc)
+
+Tester from Steven. 
+
