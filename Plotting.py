@@ -20,7 +20,7 @@ from pandas import Timestamp
     
 def Plotting(net_load_mean, disp_load_mean, non_disp_load_mean, pv_mean, hydro_mean, dom_mean, nondom_mean, dombat_mean, combat_mean): #, ev_mean, hp_mean, sf_mean):
 
-    fig,ax =  plt.subplots(nrows=6,ncols=2,sharex=True,sharey=False)
+    fig,ax =  plt.subplots(nrows=5,ncols=2,sharex=True,sharey=False)
     plt.xticks(rotation=90)
     fig.tight_layout(pad=3.0)
     
@@ -34,17 +34,17 @@ def Plotting(net_load_mean, disp_load_mean, non_disp_load_mean, pv_mean, hydro_m
     ax[0][0].set_title('Net Load')
     ax[0][0].xaxis.set_major_formatter(myFmt)   # apply HH:MM format to the x axis data
 
-    ax[0][1].plot(x_axis, non_disp_load_mean)
-    ax[0][1].set_ylabel('kWh')
-    ax[0][1].set_xlabel('Time')
-    ax[0][1].set_title('Net Non-dispatchable Load')
-    ax[0][1].xaxis.set_major_formatter(myFmt)   # apply HH:MM format to the x axis data
-
-    ax[1][0].plot(x_axis, disp_load_mean)
+    ax[1][0].plot(x_axis, non_disp_load_mean)
     ax[1][0].set_ylabel('kWh')
     ax[1][0].set_xlabel('Time')
-    ax[1][0].set_title('Net Dispatchable Load')
+    ax[1][0].set_title('Net Non-dispatchable Load')
     ax[1][0].xaxis.set_major_formatter(myFmt)   # apply HH:MM format to the x axis data
+
+    ax[0][1].plot(x_axis, disp_load_mean)
+    ax[0][1].set_ylabel('kWh')
+    ax[0][1].set_xlabel('Time')
+    ax[0][1].set_title('Net Dispatchable Load')
+    ax[0][1].xaxis.set_major_formatter(myFmt)   # apply HH:MM format to the x axis data
 
     ax[1][1].plot(x_axis, dombat_mean)
     ax[1][1].set_ylabel('kWh')
@@ -87,7 +87,7 @@ def Plotting(net_load_mean, disp_load_mean, non_disp_load_mean, pv_mean, hydro_m
     ax[4][1].set_xlabel('Time')
     ax[4][1].set_title('PV Generation')
     ax[4][1].xaxis.set_major_formatter(myFmt)   # apply HH:MM format to the x axis data
-
+    """
     #ax[5][0].plot(x_axis, ev_mean)
     ax[5][0].set_ylabel('kWh')
     ax[5][0].set_xlabel('Time')
@@ -99,6 +99,7 @@ def Plotting(net_load_mean, disp_load_mean, non_disp_load_mean, pv_mean, hydro_m
     ax[5][1].set_xlabel('Time')
     ax[5][1].set_title('Solar Farm Generation')
     ax[5][1].xaxis.set_major_formatter(myFmt)   # apply HH:MM format to the x axis data
+    """
     return fig
 
 
