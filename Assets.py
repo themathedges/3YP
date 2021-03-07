@@ -77,9 +77,9 @@ class pvAsset(Non_Dispatchable):
         """
         df = pd.read_csv(self.profile_filepath, index_col=0,
                          parse_dates=True, dayfirst=True)  # kW/kWp
-        #print('original solar data coming...')
-        #print(df.info())
-        #print(df.head(50))
+        print('original solar data coming...')
+        print(df.info())
+        print(df.head(50))
         return df  
 
     def getOutput(self, dt):
@@ -101,13 +101,13 @@ class pvAsset(Non_Dispatchable):
                                       index=[(cfHH.index[-1] +
                                               timedelta(minutes=30))]))
         cfHH = cfHH.interpolate()
-        #print('modified solar data coming...')
-        #print(cfHH.info())
-        #print(cfHH.head(50))
+        print('modified solar data coming...')
+        print(cfHH.info())
+        print(cfHH.head(50))
         output = cfHH.values * self.pvCapacity * self.pvInstallations * dt # kWh
         self.output = output
-        #print('solar output coming...')
-        #print(output)
+        print('solar output coming...')
+        print(output)
         return output
 
 

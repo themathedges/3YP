@@ -8,7 +8,7 @@ given 1/5th of the year is plotted here.
 Author: Mathew Hedges
 """
 
-__version__ = '0.1'
+__version__ = '0.2'
 
 # import modules
 import matplotlib.pyplot as plt
@@ -20,14 +20,14 @@ from pandas import Timestamp
     
 def loadPlotting(net_load_mean, non_disp_load_mean, dom_mean, nondom_mean, ev_mean, hp_mean):
 
-    fig,ax =  plt.subplots(nrows=3,ncols=2,sharex=True,sharey=False)
+    fig,ax =  plt.subplots(nrows=2,ncols=2,sharex=True,sharey=False)
     plt.xticks(rotation=90)
     fig.tight_layout(pad=3.0)
     
     x_axis = pd.date_range('2018' + '-01-01', periods = 48, freq= '0.5H') 
     myFmt = mdates.DateFormatter('%H:%M')       # format the times into Hour:Minute format
     plt.gcf().autofmt_xdate()                   # automatic rotation of the axis plots
-    plt.style.use('seaborn')
+    #plt.style.use('seaborn')
 
     ax[0][0].plot(x_axis, net_load_mean)
     ax[0][0].set_ylabel('kWh')
@@ -56,20 +56,20 @@ def loadPlotting(net_load_mean, non_disp_load_mean, dom_mean, nondom_mean, ev_me
     ax[1][1].set_title('Non-domestic Load')
     ax[1][1].xaxis.set_major_formatter(myFmt)   # apply HH:MM format to the x axis data
     ax[1][1].grid(b=True)
-
-    #ax[2][0].plot(x_axis, ev_mean)
+    """
+    ax[2][0].plot(x_axis, ev_mean)
     ax[2][0].set_ylabel('kWh')
     ax[2][0].set_xlabel('Time')
     ax[2][0].set_title('Electric Vehicle Load')
     ax[2][0].xaxis.set_major_formatter(myFmt)   # apply HH:MM format to the x axis data
 
-    #ax[2][1].plot(x_axis, hp_mean)
+    ax[2][1].plot(x_axis, hp_mean)
     ax[2][1].set_ylabel('kWh')
     ax[2][1].set_xlabel('Time')
     ax[2][1].set_title('Heat Pump Load')
     ax[2][1].xaxis.set_major_formatter(myFmt)   # apply HH:MM format to the x axis data
     ax[2][1].grid(b=True)
-
+    """
     return fig
 
 
@@ -82,7 +82,7 @@ def genPlotting(hydro_mean, pv_mean, sf_mean, net_load_mean, gross_gen_mean, dis
     x_axis = pd.date_range('2018' + '-01-01', periods = 48, freq= '0.5H') 
     myFmt = mdates.DateFormatter('%H:%M')       # format the times into Hour:Minute format
     plt.gcf().autofmt_xdate()                   # automatic rotation of the axis plots
-    plt.style.use('seaborn')
+    #plt.style.use('seaborn')
 
     ax[2][0].plot(x_axis, disp_load_mean)
     ax[2][0].set_ylabel('kWh')
