@@ -238,10 +238,11 @@ Fig5.canvas.set_window_title('20th Oct - 31st Dec')
 #######################################
 
 
-x = emission_intensity                      # carbon emission intensities tnCO2/kWh (length 17520)
-y = net_load                                # net load kWh (length 17520)
+# calculate CO2 emissions saved
+x = emission_intensity                      # carbon emission intensities in tnCO2/kWh 
+y = net_load                                # net load in kWh
 
-emissions = []                              # emissions tnCO2
+emissions = []                              # emissions in tnCO2
 for i,j in zip(x,y):
     if (i or j) == 'nan':                   # dealing with unruly nans - I don't know why there are so many???
         emissions.append(0)
@@ -249,7 +250,6 @@ for i,j in zip(x,y):
         emission = i*j
         emissions.append(emission)
 
-"""
 # plot the net emissions over 2020
 fig,ax = plt.subplots()
 plt.xticks(rotation=90)
@@ -266,7 +266,7 @@ ax.set_title('Net Emissions')
 ax.xaxis.set_major_formatter(myFmt)     # apply HH:MM format to the x axis data
 fig.canvas.set_window_title('1st Jan - 31st Dec')
 
-
+"""
 # plot the average emissions for a day in each quintile of the year 2020 - this is a mess!
 emissions_means = AV.Averaging(emissions)
 zero = np.zeros((48,1)).tolist()
