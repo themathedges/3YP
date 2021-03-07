@@ -22,6 +22,7 @@ import EnergySystem as ES
 import Market as MK
 import Averaging as AV
 import Plotting as PT
+import Emissions as EM
 
 
 #######################################
@@ -49,8 +50,9 @@ pvInstallations = 1500
 pv_site1 = AS.pvAsset(pvCapacity, pvInstallations) # domestic PV
 non_dispatchable.append(pv_site1)
 
-#pv_site2 = AS.sfAsset(pvCapacity, nPanels)         # solar farm
-#non_dispatchable.append(pv_site2)
+pvPanels = 180
+pv_site2 = AS.sfAsset(pvCapacity, pvPanels)         # solar farm
+non_dispatchable.append(pv_site2)
 
 
 # Hydro Generation
@@ -86,6 +88,15 @@ battery_site1 = AS.PracticalBatteryAsset1(dt, T, capacity, power, eff, nUsers1) 
 dispatchable.append(battery_site1)
 battery_site2 = AS.PracticalBatteryAsset2(dt, T, capacity, power, eff, nUsers2) # community battery storage - 2nd life EVs
 dispatchable.append(battery_site2)
+
+
+# Carbon Emissions Intensities
+loss = 0.08 # 8% loss between generation and consumption of electricity
+emission_intensity = EM.Emissions(loss)                                                     # numpy array gCO2/kWh
+emission_intensity = [i[0] for i in emission_intensity.getEmissionIntensity().tolist()]     # list gCO2/kWh
+emission_intensity = [i/1000000 for i in emission_intensity]                                   # list tnCO2/kWh
+#print('carbon intensity of electricity consumption (list) coming...')
+#print(emission_intensity)
 
 
 #######################################
@@ -139,8 +150,8 @@ non_disp_load_means = AV.Averaging(non_disp_load)
 pv = [i[0] for i in pv_site1.getOutput(dt).tolist()]                # average pv generation 
 pv_means = AV.Averaging(pv)
 
-#sf = [i[0] for i in pv_site2.getOutput(dt).tolist()]                # average solar farm generation 
-#sf_means = AV.Averaging(sf)
+sf = [i[0] for i in pv_site2.getOutput(dt).tolist()]                # average solar farm generation 
+sf_means = AV.Averaging(sf)
 
 hydro = [i[0] for i in hydro_site1.getOutput(dt).tolist()]          # average hydro generation
 hydro_means = AV.Averaging(hydro)
@@ -163,50 +174,111 @@ dombat_means = AV.Averaging(dombat)
 combat = [i[0] for i in battery_site2.getOutput(net_load).tolist()] # average community battery storage
 combat_means = AV.Averaging(combat)
 
+gross_gen = [i+j+k for i,j,k in zip(hydro,pv,sf)]
+gross_gen_means = AV.Averaging(gross_gen)
+
 
 #######################################
-### STEP 8: plot results
+### STEP 8: plot generation results
+#######################################
+
+
+# plotting style
+plt.style.use('seaborn')
+
+# 1st 5th of the year     # this is plotting average profiles found over the dates 1st Jan-14th March; the "Average.py" function finds these average profiles over this period
+fig1 = PT.genPlotting(hydro_means[0], pv_means[0], sf_means[0], net_load_means[0], gross_gen_means[0], disp_load_means[0])
+fig1.canvas.set_window_title('1st Jan - 14th Mar')
+
+# 2nd 5th of the year
+fig2 = PT.genPlotting(hydro_means[1], pv_means[1], sf_means[1], net_load_means[1], gross_gen_means[1], disp_load_means[1])
+fig2.canvas.set_window_title('15th Mar - 26th May')
+
+# 3rd 5th of the year
+fig3 = PT.genPlotting(hydro_means[2], pv_means[2], sf_means[2], net_load_means[2], gross_gen_means[2], disp_load_means[2])
+fig3.canvas.set_window_title('27th May - 7th Aug')
+
+# 4th 5th of the year
+fig4 = PT.genPlotting(hydro_means[3], pv_means[3], sf_means[3], net_load_means[3], gross_gen_means[3], disp_load_means[3])
+fig4.canvas.set_window_title('8th Aug - 19th Oct')
+
+# 5th 5th of the year
+fig5 = PT.genPlotting(hydro_means[4], pv_means[4], sf_means[4], net_load_means[4], gross_gen_means[4], disp_load_means[4])
+fig5.canvas.set_window_title('20th Oct - 31st Dec') 
+
+
+#######################################
+### STEP 9: plot load results
 #######################################
 
 
 # 1st 5th of the year     # this is plotting average profiles found over the dates 1st Jan-14th March; the "Average.py" function finds these average profiles over this period
-fig1 = PT.Plotting(net_load_means[0], disp_load_means[0], non_disp_load_means[0], pv_means[0], hydro_means[0], dom_means[0], nondom_means[0], dombat_means[0], combat_means[0])
-fig1.canvas.set_window_title('1st Jan - 14th Mar')
+Fig1 = PT.loadPlotting(net_load_means[0], non_disp_load_means[0], dom_means[0], nondom_means[0], None, None)#, ev_means[0], hp_means[0])
+Fig1.canvas.set_window_title('1st Jan - 14th Mar')
 
 # 2nd 5th of the year
-fig2 = PT.Plotting(net_load_means[1], disp_load_means[1], non_disp_load_means[1], pv_means[1], hydro_means[1], dom_means[1], nondom_means[1], dombat_means[1], combat_means[1])
-fig2.canvas.set_window_title('15th Mar - 26th May')
+Fig2 = PT.loadPlotting(net_load_means[1], non_disp_load_means[1], dom_means[1], nondom_means[1], None, None)#,ev_means[1], hp_means[1])
+Fig2.canvas.set_window_title('15th Mar - 26th May')
 
 # 3rd 5th of the year
-fig3 = PT.Plotting(net_load_means[2], disp_load_means[2], non_disp_load_means[2], pv_means[2], hydro_means[2], dom_means[2], nondom_means[2], dombat_means[2], combat_means[2])
-fig3.canvas.set_window_title('27th May - 7th Aug')
+Fig3 = PT.loadPlotting(net_load_means[2], non_disp_load_means[2], dom_means[2], nondom_means[2], None, None)#, ev_means[2], hp_means[2])
+Fig3.canvas.set_window_title('27th May - 7th Aug')
 
 # 4th 5th of the year
-fig4 = PT.Plotting(net_load_means[3], disp_load_means[3], non_disp_load_means[3], pv_means[3], hydro_means[3], dom_means[3], nondom_means[3], dombat_means[3], combat_means[3])
-fig4.canvas.set_window_title('8th Aug - 19th Oct')
+Fig4 = PT.loadPlotting(net_load_means[3], non_disp_load_means[3], dom_means[3], nondom_means[3], None, None)#, ev_means[3], hp_means[3])
+Fig4.canvas.set_window_title('8th Aug - 19th Oct')
 
 # 5th 5th of the year
-fig5 = PT.Plotting(net_load_means[4], disp_load_means[4], non_disp_load_means[4], pv_means[4], hydro_means[4], dom_means[4], nondom_means[4], dombat_means[4], combat_means[4])
-fig5.canvas.set_window_title('20th Oct - 31st Dec') 
+Fig5 = PT.loadPlotting(net_load_means[4], non_disp_load_means[4], dom_means[4], nondom_means[4], None, None)#, ev_means[4], hp_means[4])
+Fig5.canvas.set_window_title('20th Oct - 31st Dec') 
 
+
+#######################################
+### STEP 10: calculate and plot emissions
+#######################################
+
+
+x = emission_intensity                      # carbon emission intensities tnCO2/kWh (length 17520)
+y = net_load                                # net load kWh (length 17520)
+
+emissions = []                              # emissions tnCO2
+for i,j in zip(x,y):
+    if (i or j) == 'nan':                   # dealing with unruly nans - I don't know why there are so many???
+        emissions.append(0)
+    else:
+        emission = i*j
+        emissions.append(emission)
 
 """
-## plot non-domestic profile <-- I can encorporate the non-dom profile into the subplot later. I just plotted it as a seperate figure here to check it was the correct shape
+# plot the net emissions over 2020
 fig,ax = plt.subplots()
 plt.xticks(rotation=90)
 fig.tight_layout(pad=3.0)
 
-x_axis = pd.date_range('2018' + '-01-01', periods = 48, freq= '0.5H') 
+x_axis = pd.date_range('2020' + '-01-01', periods = 17520, freq= '0.5H') 
 myFmt = mdates.DateFormatter('%H:%M')   # format the times into Hour:Minute format
 plt.gcf().autofmt_xdate()               # automatic rotation of the axis plots
 
-ax.plot(x_axis, nondom_means[0])
-ax.set_ylabel('kWh')
+ax.plot(x_axis, emissions)
+ax.set_ylabel('tnCO2')
 ax.set_xlabel('Time')
-ax.set_title('Non-Domestic Load')
-ax.xaxis.set_major_formatter(myFmt)   # apply HH:MM format to the x axis data
-fig.canvas.set_window_title('1st Jan - 14th Mar')
+ax.set_title('Net Emissions')
+ax.xaxis.set_major_formatter(myFmt)     # apply HH:MM format to the x axis data
+fig.canvas.set_window_title('1st Jan - 31st Dec')
+
+
+# plot the average emissions for a day in each quintile of the year 2020 - this is a mess!
+emissions_means = AV.Averaging(emissions)
+zero = np.zeros((48,1)).tolist()
+fig6 = PT.Plotting(emissions_means[0], emissions_means[1], emissions_means[2], emissions_means[3], emissions_means[4], zero, zero, zero, zero)
+fig6.canvas.set_window_title('Net Emissions Daily Mean of Each Quintile (incorrect labels, 4 are zeroed and 5 represent the quintile averages)')
 """
+
+# find the net total emissions
+emissions = ['{:.2f}'.format(i) for i in emissions]
+print('Annual Net Emissions in tnCO2')
+filtered = [float(element) for element in emissions if element != 'nan']
+print(sum(filtered))
 
 
 plt.show()

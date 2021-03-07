@@ -99,4 +99,7 @@ Number of installations = 200
 gen_2050_export_df_v1.csv : version 1 of 2050 Sandford Hydro Generation Data predicted from linear regression model
 
 ### Outgoing Tariff
-octopus_outgoing_2018_SE.csv : 2018 data for Octopus Outgoing tariff (pence/kWh) for the South East of UK. Data obtained from <a href="https://octopus.energy/blog/outgoing/">Octopus outgoing</a>
+octopus_outgoing_2018_SE.csv : 2018 data for Octopus Outgoing tariff (pence/kWh) for the South East of UK. Data obtained from <a href="https://octopus.energy/blog/outgoing/">Octopus Outgoing</a>
+
+### Carbon Intensity
+Carbon_Intensity_Data_*Month*.csv : 2020 data for the carbon intensity of emissions for the whole UK. Data obtained from <a href="https://carbonintensity.org.uk/">Carbon Intensity API</a>

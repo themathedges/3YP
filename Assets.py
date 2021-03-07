@@ -13,7 +13,6 @@ __version__ = '0.4'
 # import modules
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 from datetime import timedelta
 
 
@@ -108,6 +107,81 @@ class pvAsset(Non_Dispatchable):
         output = cfHH.values * self.pvCapacity * self.pvInstallations * dt # kWh
         self.output = output
         #print('solar output coming...')
+        #print(output)
+        return output
+
+
+class sfAsset(Non_Dispatchable):
+    """
+    Solar farm asset class
+
+    Parameters
+    ----------
+    profile_filepath : str
+            Filepath for the profile
+    
+    Capacity : float
+        PV capacity, kW.
+
+    install_cost : float
+        £ price per kWp to install
+        
+    maintenance_cost : float
+        Annual maintenance cost in £s
+    """
+    def __init__(self, pvCapacity, pvPanels, profile_filepath='data/oxon_solar_2014.csv', install_cost=(6000/4),
+                 maintenance=100, **kwargs):
+        super().__init__()
+        self.profile_filepath = profile_filepath
+        self.pvCapacity = pvCapacity
+        self.asset_type = 'SF'
+        self.install_cost = install_cost * 100  # p/kWp
+        self.maintenance = maintenance * 100 # p per year
+        self.cf = self.solarProfile()
+        self.pvPanels = pvPanels
+        
+    def solarProfile(self):
+        """
+        Loads the kW/kWp hourly solar farm profile
+
+
+        Returns
+        -------
+        kW/kWp solar farm profile
+
+        """
+        df = pd.read_csv(self.profile_filepath, index_col=0,
+                         parse_dates=True, dayfirst=True)  # kW/kWp
+        #print('original solar farm data coming...')
+        #print(df.info())
+        #print(df.head(50))
+        return df  
+
+    def getOutput(self, dt):
+        """
+        Return solar farm output
+
+        Parameters
+        ----------
+        dt : float
+            Time interval (hours)
+
+        Returns
+        -------
+        Solar farm output : numpy array
+        """
+        cfHH = self.cf.resample('0.5H').mean()
+        # adding a missing point at the end
+        cfHH = cfHH.append(pd.DataFrame({cfHH.columns[0]: np.nan},
+                                      index=[(cfHH.index[-1] +
+                                              timedelta(minutes=30))]))
+        cfHH = cfHH.interpolate()
+        #print('modified solar farm data coming...')
+        #print(cfHH.info())
+        #print(cfHH.head(50))
+        output = cfHH.values * self.pvCapacity * self.pvPanels * dt # kWh
+        self.output = output
+        #print('solar farm output coming...')
         #print(output)
         return output
 
