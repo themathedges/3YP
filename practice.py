@@ -65,6 +65,10 @@ print(np.mean(x5, axis=0)) # find the mean of the halfhours over every day
 list1 = [1, 2, 'nan', 4]
 list2 = [2, 2, 2, 2]
 list3 = []
+list4 = [1, 1, 1, 2]
+list6 = [1, 1, 1, 1]
+list5 = [i + j + k for i,j,k in zip(list2,list4,list6)]
+print(list5)
 
 for i,j in zip(list1,list2):
     if (i or j) == 'nan':

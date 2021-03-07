@@ -75,8 +75,8 @@ class EnergySystem:
             elif asset.asset_type == 'PV':
                 profile = -1 * nondispat[i].getOutput(self.dt)  # -1 x generation asset
 
-            #elif asset.asset_type == 'SF':
-                #profile = -1 * nondispat[i].getOutput(self.dt)  # -1 x generation asset
+            elif asset.asset_type == 'SF':
+                profile = -1 * nondispat[i].getOutput(self.dt)  # -1 x generation asset
                
             elif asset.asset_type == 'HYDRO':
                 profile = -1 * nondispat[i].getOutput(self.dt)  # -1 x generation asset

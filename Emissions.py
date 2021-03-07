@@ -39,9 +39,9 @@ class Emissions:
         
     def co2Profile(self):
         df = pd.read_csv(self.profile_filepath, usecols=[0]) # gCO2 / kWh
-        print('carbon intensity of electricity generation (data) coming...')
-        print(df.info())
-        print(df.head(50))
+        #print('carbon intensity of electricity generation (data) coming...')
+        #print(df.info())
+        #print(df.head(50))
         return df
         
     def getEmissionIntensity(self):
@@ -60,8 +60,8 @@ class Emissions:
         gen_intensity = self.profile.values # gCO2 / kWh
         con_intensity = gen_intensity * self.loss_factor # gCO2 / kWh 
         self.con_intensity = con_intensity
-        print('carbon intensity of electricity consumption (output) coming...')
-        print(con_intensity)
+        #print('carbon intensity of electricity consumption (output) coming...')
+        #print(con_intensity)
         return con_intensity
 
 
