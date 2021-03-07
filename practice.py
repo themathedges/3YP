@@ -9,7 +9,7 @@ Author: Mathew Hedges
 # import modules
 import numpy as np
 
-
+"""
 y0 = np.ones((17520,1)) # a years worth of halfhours
 y1 = y0[0:3504] # 1/5th of a years worth of halfhours
 y2 = y0[3504:7008]*2
@@ -58,5 +58,21 @@ for i in range(72):
     print(x5)
 print('mean y5...')
 print(np.mean(x5, axis=0)) # find the mean of the halfhours over every day
+"""
+
+
+# element-wise multiplication of two lists
+list1 = [1, 2, 'nan', 4]
+list2 = [2, 2, 2, 2]
+list3 = []
+
+for i,j in zip(list1,list2):
+    if (i or j) == 'nan':
+        list3.append(0)
+    else:
+        list3.append(i*j)
+
+print(list3)
+print(sum(list3))
 
 

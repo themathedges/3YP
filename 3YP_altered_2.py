@@ -22,6 +22,7 @@ import EnergySystem as ES
 import Market as MK
 import Averaging as AV
 import Plotting as PT
+import Emissions as EM
 
 
 #######################################
@@ -86,6 +87,15 @@ battery_site1 = AS.PracticalBatteryAsset1(dt, T, capacity, power, eff, nUsers1) 
 dispatchable.append(battery_site1)
 battery_site2 = AS.PracticalBatteryAsset2(dt, T, capacity, power, eff, nUsers2) # community battery storage - 2nd life EVs
 dispatchable.append(battery_site2)
+
+
+# Carbon Emissions Intensities
+loss = 0.08 # 8% loss between generation and consumption of electricity
+emission_intensity = EM.Emissions(loss)                                                     # numpy array gCO2/kWh
+emission_intensity = [i[0] for i in emission_intensity.getEmissionIntensity().tolist()]     # list gCO2/kWh
+emission_intensity = [i/1000000 for i in emission_intensity]                                   # list tnCO2/kWh
+print('carbon intensity of electricity consumption (list) coming...')
+#print(emission_intensity)
 
 
 #######################################
@@ -190,22 +200,52 @@ fig5 = PT.Plotting(net_load_means[4], disp_load_means[4], non_disp_load_means[4]
 fig5.canvas.set_window_title('20th Oct - 31st Dec') 
 
 
-"""
-## plot non-domestic profile <-- I can encorporate the non-dom profile into the subplot later. I just plotted it as a seperate figure here to check it was the correct shape
+#######################################
+### STEP 9: calculate emissions
+#######################################
+
+
+x = emission_intensity                      # carbon emission intensities tnCO2/kWh (length 17520)
+y = net_load                                # net load kWh (length 17520)
+
+emissions = []                              # emissions tnCO2
+for i,j in zip(x,y):
+    if (i or j) == 'nan':                   # dealing with unruly nans - I don't know why there are so many???
+        emissions.append(0)
+    else:
+        emission = i*j
+        emissions.append(emission)
+
+
+# plot the net emissions over 2020
 fig,ax = plt.subplots()
 plt.xticks(rotation=90)
 fig.tight_layout(pad=3.0)
 
-x_axis = pd.date_range('2018' + '-01-01', periods = 48, freq= '0.5H') 
+x_axis = pd.date_range('2020' + '-01-01', periods = 17520, freq= '0.5H') 
 myFmt = mdates.DateFormatter('%H:%M')   # format the times into Hour:Minute format
 plt.gcf().autofmt_xdate()               # automatic rotation of the axis plots
 
-ax.plot(x_axis, nondom_means[0])
-ax.set_ylabel('kWh')
+ax.plot(x_axis, emissions)
+ax.set_ylabel('tnCO2')
 ax.set_xlabel('Time')
-ax.set_title('Non-Domestic Load')
-ax.xaxis.set_major_formatter(myFmt)   # apply HH:MM format to the x axis data
-fig.canvas.set_window_title('1st Jan - 14th Mar')
-"""
+ax.set_title('Net Emissions')
+ax.xaxis.set_major_formatter(myFmt)     # apply HH:MM format to the x axis data
+fig.canvas.set_window_title('1st Jan - 31st Dec')
+
+
+# plot the average emissions for a day in each quintile of the year 2020 - this is a mess!
+emissions_means = AV.Averaging(emissions)
+zero = np.zeros((48,1)).tolist()
+fig6 = PT.Plotting(emissions_means[0], emissions_means[1], emissions_means[2], emissions_means[3], emissions_means[4], zero, zero, zero, zero)
+fig6.canvas.set_window_title('Net Emissions Daily Mean of Each Quintile (incorrect labels, 4 are zeroed and 5 represent the quintile averages)')
+
+
+# find the net total emissions
+emissions = ['{:.2f}'.format(i) for i in emissions]
+print('Annual Net Emissions in tnCO2')
+filtered = [float(element) for element in emissions if element != 'nan']
+print(sum(filtered))
+
 
 plt.show()
