@@ -208,5 +208,4 @@ ax.xaxis.set_major_formatter(myFmt)   # apply HH:MM format to the x axis data
 fig.canvas.set_window_title('1st Jan - 14th Mar')
 """
 
-
 plt.show()
