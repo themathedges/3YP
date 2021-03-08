@@ -38,6 +38,8 @@ Dataset: data/oxon_class1_year_load.csv
 <br />
 Number of installations = 1700 (number of households in Kennington)
 
+Ideal Kennington demand per household (after shifting and reduction): data/ideal_domestic_demand_per_household_v1.csv
+
 ### Non-Domestic Electricity Demand - ndAsset
 Dataset: ?
 
