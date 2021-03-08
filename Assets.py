@@ -5,7 +5,7 @@
 3YP basic asset module.
 Adapted from UoO EPG's energy management framework.
 Authors: Avinash Vijay, Scot Wheeler, Mathew Hedges,
-Minnie Karanjavala, Ravi Kohli
+Minnie Karanjavala, Ravi Kohli, Steven Jones
 """
 
 __version__ = '0.5'
@@ -71,11 +71,9 @@ class pvAsset(Non_Dispatchable):
         """
         Loads the kW/kWp hourly solar profile
 
-
         Returns
         -------
         kW/kWp solar profile
-
         """
         df = pd.read_csv(self.profile_filepath, index_col=0,
                          parse_dates=True, dayfirst=True)  # kW/kWp
@@ -86,7 +84,7 @@ class pvAsset(Non_Dispatchable):
 
     def getOutput(self, dt):
         """
-        Return PV output
+        Returns PV output
 
         Parameters
         ----------
@@ -148,11 +146,9 @@ class sfAsset(Non_Dispatchable):
         """
         Loads the kW/kWp hourly solar farm profile
 
-
         Returns
         -------
         kW/kWp solar farm profile
-
         """
         df = pd.read_csv(self.profile_filepath, index_col=0,
                          parse_dates=True, dayfirst=True)  # kW/kWp
@@ -202,7 +198,7 @@ class loadAsset(Non_Dispatchable):
     profile_filepath : str
         Filepath to load profile
     """
-    def __init__(self, nHouseholds, profile_filepath='data/ken_dom_annual_demand_per_household.csv', **kwargs):    
+    def __init__(self, nHouseholds, profile_filepath, **kwargs):    
         super().__init__()
         self.nHouseholds = nHouseholds
         self.asset_type = 'DOMESTIC_LOAD'
@@ -219,7 +215,7 @@ class loadAsset(Non_Dispatchable):
         
     def getOutput(self, dt):
         """
-        Return domestic demand
+        Returns domestic demand
 
         Parameters
         ----------
@@ -254,7 +250,6 @@ class ndAsset(Non_Dispatchable):
         -------
         Non-domestic demand : numpy array
     """
-  
     def __init__(self, nBusinesses, profile_filepath='data/ken_non_dom_annual_demand_per_user.csv', **kwargs):
         super().__init__()
         self.nBusinesses = nBusinesses
@@ -272,7 +267,7 @@ class ndAsset(Non_Dispatchable):
         
     def getOutput(self, dt):
         """
-        Return non-domestic demand
+        Returns non-domestic demand
 
         Parameters
         ----------
@@ -341,54 +336,50 @@ class ndAsset(Non_Dispatchable):
     """
 
 
-#class hpAsset(Dispatchable):
-
-    #Heat Pump asset class
-
-    #Parameters
-    #----------
-    #nHouses : int
-    #    Number of houses
-        
-    #profile_filepath : str
-    #    Filepath to load profile
-
+class hpAsset(Dispatchable):
     """
-    def __init__(self, nHouseholds, profile_filepath='?', **kwargs):
+    Heat Pump asset class
+
+    Parameters
+    ----------
+    nHouses : int
+        Number of houses
+        
+    profile_filepath : str
+        Filepath to load profile
+    """
+    def __init__(self, profile_filepath='data/centralheatpump.csv', **kwargs):
         super().__init__()
-        self.nHouseholds = nHouseholds
         self.asset_type = 'HEAT_PUMP_LOAD'
         self.install_cost = 0
         self.profile_filepath = profile_filepath
         self.profile = self.hpProfile()
         
     def hpProfile(self):
-        df = pd.read_csv(self.profile_filepath, usecols=[1]) # kW
-        print('heat pump load data coming...')
-        print(df.info())
-        print(df.head(50))
+        df = pd.read_csv(self.profile_filepath, usecols=[2]) # kWh
+        #print('heat pump load data coming...')
+        #print(df.info())
+        #print(df.head(50))
         return df
         
-    def getOutput(self, dt):
-    
-        #Return heat pump electricity demand
+    def getOutput(self):
+        """
+        Returns heat pump electricity demand
 
-        #Parameters
-        #----------
-        #dt : float
-        #    Time interval (hours)
+        Parameters
+        ----------
+        dt : float
+            Time interval (hours)
 
-        #Returns
-        #-------
-        #Heat pump electricity demand : numpy array
-        
-        hp = self.profile.values
-        output = hp * self.nHouseholds * dt # kWh
+        Returns
+        -------
+        Heat pump electricity demand : numpy array
+        """
+        output = self.profile.values # already in kWh
         self.output = output
-        print('heat pump load output coming...')
-        print(output)
+        #print('heat pump load output coming...')
+        #print(output)
         return output
-    """
 
 
 class PracticalBatteryAsset1(Dispatchable):

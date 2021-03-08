@@ -20,7 +20,7 @@ from pandas import Timestamp
     
 def loadPlotting(net_load_mean, non_disp_load_mean, dom_mean, nondom_mean, ev_mean, hp_mean):
 
-    fig,ax =  plt.subplots(nrows=2,ncols=2,sharex=True,sharey=False)
+    fig,ax =  plt.subplots(nrows=3,ncols=2,sharex=True,sharey=False)
     plt.xticks(rotation=90)
     fig.tight_layout(pad=3.0)
     
@@ -55,8 +55,8 @@ def loadPlotting(net_load_mean, non_disp_load_mean, dom_mean, nondom_mean, ev_me
     ax[1][1].set_title('Non-domestic Load')
     ax[1][1].xaxis.set_major_formatter(myFmt)   # apply HH:MM format to the x axis data
     ax[1][1].grid(b=True)
-    """
-    ax[2][0].plot(x_axis, ev_mean)
+    
+    #ax[2][0].plot(x_axis, ev_mean)
     ax[2][0].set_ylabel('kWh')
     ax[2][0].set_xlabel('Time')
     ax[2][0].set_title('Electric Vehicle Load')
@@ -68,7 +68,7 @@ def loadPlotting(net_load_mean, non_disp_load_mean, dom_mean, nondom_mean, ev_me
     ax[2][1].set_title('Heat Pump Load')
     ax[2][1].xaxis.set_major_formatter(myFmt)   # apply HH:MM format to the x axis data
     ax[2][1].grid(b=True)
-    """
+    
     return fig
 
 

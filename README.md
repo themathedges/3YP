@@ -5,7 +5,7 @@
 ### Sandford Hydro - hydroAsset
 Dataset: data/Sandford_hydro_generation_30_min_date.csv
 <br />
-Power output = 450 kW
+Power output = 450 kWp
 <br />
 Annual maintenance = £100,000
 <br />
@@ -20,18 +20,18 @@ Annual maintenance = £100
 <br />
 Installation cost = £6,000
 <br />
-Number of installations = 1500 (number of houses in Kennington)
+Number of installations = 1700 (number of houses in Kennington)
 
 ### Solar PV Farm - sfAsset
-Dataset: data/oxon_solar_2014.csv ???
+Dataset: data/oxon_solar_2014.csv 
 <br />
-Peak power output = 4 kWp ???
+Peak power output = 300 Wp 
 <br />
-Annual maintenance = £100 ???
+Annual maintenance = £100 
 <br />
-Installation cost = £6,000 ???
+Installation cost = ???
 <br />
-Number of panels = ???
+Number of panels = 30,000
 
 ### Domestic Electricity Demand - loadAsset
 Dataset: data/oxon_class1_year_load.csv
@@ -47,13 +47,13 @@ Dataset: ?
 Dataset: ?
 
 ### Water-Source Heat Pump System - hpAsset
-Dataset: ?
+Dataset: data/centralheatpump.csv
 <br />
-Power input = ?
+Power input = ???
 <br />
-Annual maintenance = ?
+Annual maintenance = ???
 <br />
-Installation cost = ?
+Installation cost = ???
 <br />
 Number of installations = 1700 (number of households in Kennington)
 
