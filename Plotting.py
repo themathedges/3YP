@@ -27,7 +27,6 @@ def loadPlotting(net_load_mean, non_disp_load_mean, dom_mean, nondom_mean, ev_me
     x_axis = pd.date_range('2018' + '-01-01', periods = 48, freq= '0.5H') 
     myFmt = mdates.DateFormatter('%H:%M')       # format the times into Hour:Minute format
     plt.gcf().autofmt_xdate()                   # automatic rotation of the axis plots
-    #plt.style.use('seaborn')
 
     ax[0][0].plot(x_axis, net_load_mean)
     ax[0][0].set_ylabel('kWh')
@@ -82,7 +81,6 @@ def genPlotting(hydro_mean, pv_mean, sf_mean, net_load_mean, gross_gen_mean, dis
     x_axis = pd.date_range('2018' + '-01-01', periods = 48, freq= '0.5H') 
     myFmt = mdates.DateFormatter('%H:%M')       # format the times into Hour:Minute format
     plt.gcf().autofmt_xdate()                   # automatic rotation of the axis plots
-    #plt.style.use('seaborn')
 
     ax[2][0].plot(x_axis, disp_load_mean)
     ax[2][0].set_ylabel('kWh')

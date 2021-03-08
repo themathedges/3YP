@@ -8,7 +8,7 @@ Authors: Avinash Vijay, Scot Wheeler, Mathew Hedges,
 Minnie Karanjavala, Ravi Kohli
 """
 
-__version__ = '0.4'
+__version__ = '0.5'
 
 # import modules
 import pandas as pd
@@ -54,7 +54,7 @@ class pvAsset(Non_Dispatchable):
     maintenance_cost : float
         Annual maintenance cost in £s
     """
-    def __init__(self, pvCapacity, pvInstallations, profile_filepath='data/oxon_solar_2014.csv', install_cost=(6000/4),
+    def __init__(self, pvCapacity, pvInstallations, annual_degradation, profile_filepath='data/oxon_solar_2014.csv', install_cost=(6000/4),
                  maintenance=100, **kwargs):
         super().__init__()
         self.profile_filepath = profile_filepath
@@ -64,6 +64,8 @@ class pvAsset(Non_Dispatchable):
         self.maintenance = maintenance * 100 # p per year
         self.cf = self.solarProfile()
         self.pvInstallations = pvInstallations
+        degradation_factor = 1-(annual_degradation*30) # 30 year lifetime (2020-2050)
+        self.degradation_factor = degradation_factor
         
     def solarProfile(self):
         """
@@ -77,9 +79,9 @@ class pvAsset(Non_Dispatchable):
         """
         df = pd.read_csv(self.profile_filepath, index_col=0,
                          parse_dates=True, dayfirst=True)  # kW/kWp
-        print('original solar data coming...')
-        print(df.info())
-        print(df.head(50))
+        #print('original solar data coming...')
+        #print(df.info())
+        #print(df.head(50))
         return df  
 
     def getOutput(self, dt):
@@ -101,13 +103,13 @@ class pvAsset(Non_Dispatchable):
                                       index=[(cfHH.index[-1] +
                                               timedelta(minutes=30))]))
         cfHH = cfHH.interpolate()
-        print('modified solar data coming...')
-        print(cfHH.info())
-        print(cfHH.head(50))
-        output = cfHH.values * self.pvCapacity * self.pvInstallations * dt # kWh
+        #print('modified solar data coming...')
+        #print(cfHH.info())
+        #print(cfHH.head(50))
+        output = cfHH.values * self.pvCapacity * self.pvInstallations * self.degradation_factor * dt # kWh
         self.output = output
-        print('solar output coming...')
-        print(output)
+        #print('solar output coming...')
+        #print(output)
         return output
 
 
@@ -129,7 +131,7 @@ class sfAsset(Non_Dispatchable):
     maintenance_cost : float
         Annual maintenance cost in £s
     """
-    def __init__(self, pvCapacity, pvPanels, profile_filepath='data/oxon_solar_2014.csv', install_cost=(6000/4),
+    def __init__(self, pvCapacity, pvPanels, annual_degradation, profile_filepath='data/oxon_solar_2014.csv', install_cost=(6000/4),
                  maintenance=100, **kwargs):
         super().__init__()
         self.profile_filepath = profile_filepath
@@ -139,6 +141,8 @@ class sfAsset(Non_Dispatchable):
         self.maintenance = maintenance * 100 # p per year
         self.cf = self.solarProfile()
         self.pvPanels = pvPanels
+        degradation_factor = 1-(annual_degradation*30)
+        self.degradation_factor = degradation_factor
         
     def solarProfile(self):
         """
@@ -179,7 +183,7 @@ class sfAsset(Non_Dispatchable):
         #print('modified solar farm data coming...')
         #print(cfHH.info())
         #print(cfHH.head(50))
-        output = cfHH.values * self.pvCapacity * self.pvPanels * dt # kWh
+        output = cfHH.values * self.pvCapacity * self.pvPanels * self.degradation_factor * dt # kWh
         self.output = output
         #print('solar farm output coming...')
         #print(output)
@@ -542,7 +546,7 @@ class hydroAsset(Non_Dispatchable):
     maintenance_cost : float
         Annual maintenance cost in £s
     """
-    def __init__(self, hydroCapacity, profile_filepath='data/Sandford_hydro_generation_30_min_date.csv', maintenance=100000, **kwargs):
+    def __init__(self, hydroCapacity, profile_filepath, maintenance=100000, **kwargs):
         super().__init__()
         self.hydroCapacity = hydroCapacity
         self.asset_type = 'HYDRO'

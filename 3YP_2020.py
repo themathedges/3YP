@@ -46,18 +46,20 @@ all_assets = []
 
 # PV Generation
 pvCapacity = 4
-pvInstallations = 1500
-pv_site1 = AS.pvAsset(pvCapacity, pvInstallations) # domestic PV
+annual_degradation = 0                                                  # solar panels at max efficiency upon installation
+pvInstallations = 200                                                   # 200 homes with solar panels
+pv_site1 = AS.pvAsset(pvCapacity, pvInstallations, annual_degradation)  # domestic PV
 non_dispatchable.append(pv_site1)
 
-pvPanels = 180
-pv_site2 = AS.sfAsset(pvCapacity, pvPanels)         # solar farm
+pvPanels = 1500                                                         # 1500 panel solar farm
+pv_site2 = AS.sfAsset(pvCapacity, pvPanels, annual_degradation)         # solar farm
 non_dispatchable.append(pv_site2)
 
 
 # Hydro Generation
 hydroCapacity = 450 # this parameter is not actually used in this asset's object?
-hydro_site1 = AS.hydroAsset(hydroCapacity)
+dataset = 'data/Sandford_hydro_generation_30_min_date.csv'
+hydro_site1 = AS.hydroAsset(hydroCapacity, dataset)
 non_dispatchable.append(hydro_site1)
 
 
