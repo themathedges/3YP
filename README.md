@@ -20,12 +20,12 @@ Annual maintenance = £100
 <br />
 Installation cost = £6,000
 <br />
-Number of installations = 1700 (number of houses in Kennington)
+Number of installations = 200-800
 
 ### Solar PV Farm - sfAsset
 Dataset: data/oxon_solar_2014.csv 
 <br />
-Peak power output = 300 Wp 
+Peak power output = 400 W 
 <br />
 Annual maintenance = £100 
 <br />

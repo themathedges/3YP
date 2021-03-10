@@ -45,40 +45,46 @@ all_assets = []
 
 
 # PV Generation
-dom_pvCapacity = 4
-annual_degradation = 0.01                                                   # solar panels degrade in generation by 1% per year
-pvInstallations = 1700                                                      # 1500 homes with solar panels
-pv_site1 = AS.pvAsset(dom_pvCapacity, pvInstallations, annual_degradation)  # domestic PV
+# Domestic Solar PV
+dom_pvCapacity = 4                                                              # 4 kW installation
+annual_degradation = 0.01                                                       # solar panels degrade in generation by 1% pa
+nInstallations = 800                                                            # 800 domestic installations
+pv_site1 = AS.pvAsset(dom_pvCapacity, nInstallations)                          
 non_dispatchable.append(pv_site1)
 
-sf_pvCapacity = 0.3
-pvPanels = 30000                                                            # 700 panel solar farm
-pv_site2 = AS.sfAsset(sf_pvCapacity, pvPanels, annual_degradation)          # solar farm
+# Solar PV Farm
+sf_pvCapacity = 0.4                                                             # 400 W panels
+nPanels = 30000                                                                 # 30,000 panel solar farm
+pv_site2 = AS.sfAsset(sf_pvCapacity, nPanels, annual_degradation)              
 non_dispatchable.append(pv_site2)
 
 
 # Hydro Generation
-hydroCapacity = 450 # this parameter is not actually used in this asset's object?
 hydro_dataset = 'data/gen_2050_export_df_v1.csv'
+hydroCapacity = 450                                                             # parameter not used in asset's object?
 hydro_site1 = AS.hydroAsset(hydroCapacity, hydro_dataset)
 non_dispatchable.append(hydro_site1)
 
 
 # Loads
-nHouseholds = 1728
+# Domestic Load
 domestic_dataset = 'data/ideal_domestic_demand_per_household_v1.csv'
-load_site1 = AS.loadAsset(nHouseholds, domestic_dataset)   # domestic load
+nHouseholds = 1728
+load_site1 = AS.loadAsset(nHouseholds, domestic_dataset)   
 non_dispatchable.append(load_site1)
 
+# Non-Domestic Load
 nBusinesses = 72                         # doubled from 2020
 load_site2 = AS.ndAsset(nBusinesses)     # non-domestic load
 non_dispatchable.append(load_site2)
 
+# EV Charging Load
 #nCars = ?
-#load_site3 = AS.ndAsset(nCars)           # EV electricity demand 
+#load_site3 = AS.ndAsset(nCars)           
 #non_dispatchable.append(load_site3)
 
-load_site4 = AS.hpAsset()     # heat pump electricity demand
+# Heat Pump Electricity Load
+load_site4 = AS.hpAsset()    
 non_dispatchable.append(load_site4)
 
 
@@ -95,7 +101,7 @@ dispatchable.append(battery_site2)
 
 
 # Carbon Emissions Intensities
-loss = 0.08 # 8% loss between generation and consumption of electricity
+loss = 0.08                                                                                 # 8% loss from electricity generation to consumption 
 emission_intensity = EM.Emissions(loss)                                                     # numpy array gCO2/kWh
 emission_intensity = [i[0] for i in emission_intensity.getEmissionIntensity().tolist()]     # list gCO2/kWh
 emission_intensity = [i/1000000 for i in emission_intensity]                                # list tnCO2/kWh
@@ -103,9 +109,9 @@ emission_intensity = [i/1000000 for i in emission_intensity]                    
 #print(emission_intensity)
 
 
-#######################################
-#STEP 4: setup and run the energy system
-#######################################
+############################################
+### STEP 3: setup and run the energy system
+############################################
 
 
 all_assets = non_dispatchable + dispatchable
@@ -114,30 +120,11 @@ all_assets = non_dispatchable + dispatchable
 energy_system = ES.EnergySystem(non_dispatchable, dispatchable, dt, T)
 
 # run
-net_load, disp_load, non_disp_load = energy_system.basic_energy_balance()
+net_load, disp_load, non_disp_load = energy_system.basic_energy_balance()       
 
 
 #######################################
-### STEP 6: setup and run the market
-#######################################
-
-
-# setup
-grid_sale_price = 0.055       # price paid for exports (£/kWh) grid/Octopus
-market1 = MK.marketObject(energy_system, export_rate= grid_sale_price) 
-
-# run
-opCost = market1.getTotalCost()
-grid_cost = market1.getGridCost().sum()
-print("Annual Network Cost: £ %.2f" % (grid_cost / 100))
-purchased, sold = market1.gridBreakdown()
-
-purchased_daily = ES.E_to_dailyE(purchased, dt) / 100  # convert to pounds
-sold_daily = ES.E_to_dailyE(sold, dt) / 100            # convert to pounds
-
-
-#######################################
-### STEP 7: prepare lists for plotting
+### STEP 4: prepare lists for plotting
 #######################################
 
 
@@ -169,7 +156,7 @@ nondom_means = AV.Averaging(nondom)
 #ev = [i[0] for i in load_site3.getOutput(dt).tolist()]              # average EV electricity demand
 #ev_means = AV.Averaging(ev)
 
-hp = [i[0] for i in load_site4.getOutput().tolist()]              # average heat pump electricity demand
+hp = [i[0] for i in load_site4.getOutput().tolist()]                # average heat pump electricity demand
 hp_means = AV.Averaging(hp)
 
 dombat = [i[0] for i in battery_site1.getOutput(net_load).tolist()] # average domestic battery storage
@@ -178,18 +165,21 @@ dombat_means = AV.Averaging(dombat)
 combat = [i[0] for i in battery_site2.getOutput(net_load).tolist()] # average community battery storage
 combat_means = AV.Averaging(combat)
 
-gross_gen = [i+j+k for i,j,k in zip(hydro,pv,sf)]
+gross_gen = [i+j+k for i,j,k in zip(hydro,pv,sf)]                   # average gross renewable generation
 gross_gen_means = AV.Averaging(gross_gen)
 
+gross_load = [i+j-k for i,j,k in zip(dom,nondom,hydro)]             # average gross demand without energy system
+gross_load_means = AV.Averaging(gross_load)
+
 
 #######################################
-### STEP 8: plot generation results
+### STEP 5: plot generation results
 #######################################
 
 
-# plotting style
+# overall plotting style
 plt.style.use('seaborn')
-
+"""
 # 1st 5th of the year     # this is plotting average profiles found over the dates 1st Jan-14th March; the "Average.py" function finds these average profiles over this period
 fig1 = PT.genPlotting(hydro_means[0], pv_means[0], sf_means[0], net_load_means[0], gross_gen_means[0], disp_load_means[0])
 fig1.canvas.set_window_title('1st Jan - 14th Mar')
@@ -212,92 +202,132 @@ fig5.canvas.set_window_title('20th Oct - 31st Dec')
 
 
 #######################################
-### STEP 9: plot load results
+### STEP 6: plot load results
 #######################################
 
 
 # 1st 5th of the year     # this is plotting average profiles found over the dates 1st Jan-14th March; the "Average.py" function finds these average profiles over this period
-Fig1 = PT.loadPlotting(net_load_means[0], non_disp_load_means[0], dom_means[0], nondom_means[0], None, hp_means[0])#, ev_means[0], hp_means[0])
+Fig1 = PT.loadPlotting(net_load_means[0], gross_load_means[0], dom_means[0], nondom_means[0], None, hp_means[0])#, ev_means[0], hp_means[0])
 Fig1.canvas.set_window_title('1st Jan - 14th Mar')
 
 # 2nd 5th of the year
-Fig2 = PT.loadPlotting(net_load_means[1], non_disp_load_means[1], dom_means[1], nondom_means[1], None, hp_means[1])#,ev_means[1], hp_means[1])
+Fig2 = PT.loadPlotting(net_load_means[1], gross_load_means[1], dom_means[1], nondom_means[1], None, hp_means[1])#,ev_means[1], hp_means[1])
 Fig2.canvas.set_window_title('15th Mar - 26th May')
 
 # 3rd 5th of the year
-Fig3 = PT.loadPlotting(net_load_means[2], non_disp_load_means[2], dom_means[2], nondom_means[2], None, hp_means[2])#, ev_means[2], hp_means[2])
+Fig3 = PT.loadPlotting(net_load_means[2], gross_load_means[2], dom_means[2], nondom_means[2], None, hp_means[2])#, ev_means[2], hp_means[2])
 Fig3.canvas.set_window_title('27th May - 7th Aug')
 
 # 4th 5th of the year
-Fig4 = PT.loadPlotting(net_load_means[3], non_disp_load_means[3], dom_means[3], nondom_means[3], None, hp_means[3])#, ev_means[3], hp_means[3])
+Fig4 = PT.loadPlotting(net_load_means[3], gross_load_means[3], dom_means[3], nondom_means[3], None, hp_means[3])#, ev_means[3], hp_means[3])
 Fig4.canvas.set_window_title('8th Aug - 19th Oct')
 
 # 5th 5th of the year
-Fig5 = PT.loadPlotting(net_load_means[4], non_disp_load_means[4], dom_means[4], nondom_means[4], None, hp_means[4])#, ev_means[4], hp_means[4])
+Fig5 = PT.loadPlotting(net_load_means[4], gross_load_means[4], dom_means[4], nondom_means[4], None, hp_means[4])#, ev_means[4], hp_means[4])
 Fig5.canvas.set_window_title('20th Oct - 31st Dec') 
+"""
+
+##########################################
+### STEP 7: calculate and plot emissions
+##########################################
 
 
-#######################################
-### STEP 10: calculate and plot emissions
-#######################################
+# calculate CO2 emissions with/without the energy system
+x0 = emission_intensity                                     # carbon emission intensities (tnCO2/kWh) 
+y0 = net_load                                               # with energy system, net load (kWh)
+z0 = gross_load                                             # without energy system, net load (kWh)  
+                                 
+emissions = [a*b for a,b in zip(y0,x0)]                     # with energy system, emissions (tnCO2)
+emissions_means = AV.Averaging(emissions)                   # daily averages for each quintile
+                                     
+previous_emissions = [a*b for a,b in zip(z0,x0)]            # without energy system, emissions (tnCO2)
+previous_emissions_means = AV.Averaging(previous_emissions) # daily averages for each quintile
 
 
-# calculate CO2 emissions for this energy system
-x = emission_intensity                      # carbon emission intensities in tnCO2/kWh 
-y = net_load                                # net load in kWh
-
-emissions = []                              # emissions in tnCO2
-for i,j in zip(x,y):
-    if (i or j) == 'nan':                   # dealing with unruly nans - I don't know why there are so many???
-        emissions.append(0)
-    else:
-        emission = i*j
-        emissions.append(emission)
-
-# plot the net emissions over 2020
-fig,ax = plt.subplots()
-plt.xticks(rotation=90)
-fig.tight_layout(pad=3.0)
-
+# plot emmissions intensity over 2020
+figA,axA = plt.subplots()
+figA.tight_layout(pad=3.0)
 x_axis = pd.date_range('2020' + '-01-01', periods = 17520, freq= '0.5H') 
-myFmt = mdates.DateFormatter('%H:%M')   # format the times into Hour:Minute format
-plt.gcf().autofmt_xdate()               # automatic rotation of the axis plots
+myFmt = mdates.DateFormatter('%H:%M')                       # format the times into Hour:Minute format
+plt.gcf().autofmt_xdate()                                   # automatic rotation of the axis plots
 
-ax.plot(x_axis, emissions)
-ax.set_ylabel('tnCO2')
-ax.set_xlabel('Time')
-ax.set_title('Net Emissions')
-ax.xaxis.set_major_formatter(myFmt)     # apply HH:MM format to the x axis data
-fig.canvas.set_window_title('1st Jan - 31st Dec')
+axA.plot(x_axis, emission_intensity)
+axA.set_ylabel('tnCO2/kWh')
+axA.set_xlabel('Time')
+axA.set_title('Emissions Intensity, 2020')
+axA.xaxis.set_major_formatter(myFmt)                        # apply HH:MM format to the x axis data
+figA.canvas.set_window_title('1st Jan - 31st Dec')
 
-"""
-# plot the average emissions for a day in each quintile of the year 2020 - this is a mess!
-emissions_means = AV.Averaging(emissions)
-zero = np.zeros((48,1)).tolist()
-fig6 = PT.Plotting(emissions_means[0], emissions_means[1], emissions_means[2], emissions_means[3], emissions_means[4], zero, zero, zero, zero)
-fig6.canvas.set_window_title('Net Emissions Daily Mean of Each Quintile (incorrect labels, 4 are zeroed and 5 represent the quintile averages)')
-"""
 
-# find the annualised net load and total emissions
-emissions = ['{:.2f}'.format(i) for i in emissions]
-filtered = [float(element) for element in emissions if element != 'nan']
-print("Annual Net Emissions: %.2f tnCO2" % (sum(filtered)))
-print("Annual Net Load: %.2f kWh" % sum(net_load))
+# plot net load over 2020
+figB,axB = plt.subplots()
+figB.tight_layout(pad=3.0)
+x_axis = pd.date_range('2020' + '-01-01', periods = 17520, freq= '0.5H') 
+myFmt = mdates.DateFormatter('%H:%M')                       # format the times into Hour:Minute format
+plt.gcf().autofmt_xdate()                                   # automatic rotation of the axis plots
 
-# find the carbon emissions saving
-z = [a+b-c for a,b,c in zip(dom,nondom,hydro)]      # previous net load in kWh
+axB.plot(x_axis, net_load)
+axB.set_ylabel('kWh')
+axB.set_xlabel('Time')
+axB.set_title('Net Load, 2020')
+axB.xaxis.set_major_formatter(myFmt)                        # apply HH:MM format to the x axis data
+figB.canvas.set_window_title('1st Jan - 31st Dec')
 
-previous_emissions = []                             # emissions in tnCO2
-for i,j in zip(x,z):
-    if (i or j) == 'nan':                           # dealing with unruly nans - I don't know why there are so many???
-        previous_emissions.append(0)
-    else:
-        emission = i*j
-        previous_emissions.append(emission)
 
-previous_emissions = ['{:.2f}'.format(i) for i in previous_emissions]
-previous_filtered = [float(element) for element in previous_emissions if element != 'nan']
-print("Annual Net Emissions Savings: %.2f tnCO2" % (sum(previous_filtered)-sum(filtered)))
+# plot CO2 emissions over 2020 
+figC,axC = plt.subplots()
+figC.tight_layout(pad=3.0)
+x_axis = pd.date_range('2020' + '-01-01', periods = 17520, freq= '0.5H') 
+myFmt = mdates.DateFormatter('%H:%M')                       # format the times into Hour:Minute format
+plt.gcf().autofmt_xdate()                                   # automatic rotation of the axis plots
+
+axC.plot(x_axis, emissions)
+axC.set_ylabel('tnCO2')
+axC.set_xlabel('Time')
+axC.set_title('Net CO2 Emissions, 2020')
+axC.xaxis.set_major_formatter(myFmt)                        # apply HH:MM format to the x axis data
+figC.canvas.set_window_title('1st Jan - 31st Dec')
+
+
+# plot average daily emissions for each quintile in 2020
+figD = PT.emPlotting(emissions_means[0], emissions_means[1], emissions_means[2], emissions_means[3],  emissions_means[4])
+figD.canvas.set_window_title('Average Daily Emissions In Each Quintile')
+
+
+# find annualised net load and total emissions with the energy system
+print("New Energy System, Annual Net Emissions: %.2f tnCO2" % (sum(emissions)))
+print("")
+print("New Energy System, Annual Net Load: %.2f GWh" % (sum(net_load)/1000))
+print("")
+
+
+# find annualised net load and total emissions without the energy system
+print("Current Situation, Annual Net Emissions: %.2f tnCO2" % sum(previous_emissions))
+print("")
+print("Current Situation, Annual Net Load: %.2f GWh" % (sum(gross_load)/1000))
+print("")
+print("Annual Net Emissions Saving With New Energy System: %.2f tnCO2" % (sum(previous_emissions)-sum(emissions)))
+print("")
+
+
+#######################################
+### STEP 8: setup and run the market
+#######################################
+
+
+# setup
+grid_sale_price = 0.055                                                          # price paid for exports (£/kWh) grid/Octopus
+market1 = MK.marketObject(energy_system, export_rate= grid_sale_price) 
+
+# run
+opCost = market1.getTotalCost()
+grid_cost = market1.getGridCost().sum()
+print("Annual Network Cost: £ %.2f" % (grid_cost / 100))
+purchased, sold = market1.gridBreakdown()
+
+# convert to pounds
+purchased_daily = ES.E_to_dailyE(purchased, dt) / 100 
+sold_daily = ES.E_to_dailyE(sold, dt) / 100
 
 
 plt.show()

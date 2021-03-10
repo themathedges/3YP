@@ -54,7 +54,7 @@ class pvAsset(Non_Dispatchable):
     maintenance_cost : float
         Annual maintenance cost in £s
     """
-    def __init__(self, pvCapacity, pvInstallations, annual_degradation, profile_filepath='data/oxon_solar_2014.csv', install_cost=(6000/4),
+    def __init__(self, pvCapacity, pvInstallations, profile_filepath='data/oxon_solar_2014.csv', install_cost=(6000/4),
                  maintenance=100, **kwargs):
         super().__init__()
         self.profile_filepath = profile_filepath
@@ -64,8 +64,8 @@ class pvAsset(Non_Dispatchable):
         self.maintenance = maintenance * 100 # p per year
         self.cf = self.solarProfile()
         self.pvInstallations = pvInstallations
-        degradation_factor = 1-(annual_degradation*30) # 30 year lifetime (2020-2050)
-        self.degradation_factor = degradation_factor
+        #degradation_factor = 1-(annual_degradation*30) # 30 year lifetime (2020-2050)
+        #self.degradation_factor = degradation_factor
         
     def solarProfile(self):
         """
@@ -104,7 +104,7 @@ class pvAsset(Non_Dispatchable):
         #print('modified solar data coming...')
         #print(cfHH.info())
         #print(cfHH.head(50))
-        output = cfHH.values * self.pvCapacity * self.pvInstallations * self.degradation_factor * dt # kWh
+        output = cfHH.values * self.pvCapacity * self.pvInstallations * dt # kWh
         self.output = output
         #print('solar output coming...')
         #print(output)
