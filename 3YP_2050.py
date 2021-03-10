@@ -89,15 +89,28 @@ non_dispatchable.append(load_site4)
 
 
 # Battery Storage
-capacity = 36
-power = 50                                                                      # fast charging power capacity
-eff = 0.7
-nUsers1 = 700
-nUsers2 = 200
-battery_site1 = AS.PracticalBatteryAsset1(dt, T, capacity, power, eff, nUsers1) # domestic battery storage - 1st life EVs
+# Domestic Batteries - 2nd life EVs
+nUsers1 = 100
+capacity1 = 36*0.8
+power1 = 40                                                               
+eff1 = 0.7
+battery_site1 = AS.PracticalBatteryAsset1(dt, T, capacity1, power1, eff1, nUsers1) 
 dispatchable.append(battery_site1)
-battery_site2 = AS.PracticalBatteryAsset2(dt, T, capacity, power, eff, nUsers2) # community battery storage - 2nd life EVs
+
+# Community Battery - costs?
+capacity2 = 2100
+power2 = 500
+eff2 = 0.9
+battery_site2 = AS.PracticalBatteryAsset2(dt, T, capacity2, power2, eff2) 
 dispatchable.append(battery_site2)
+
+# V2G Storage - how do we know WHEN (times of day) we can use V2G storage?
+nUsers3 = 100
+capacity3 = 36
+power3 = 40
+eff3 = 0.7
+battery_site3 = AS.PracticalBatteryAsset3(dt, T, capacity3, power3, eff3, nUsers3) 
+dispatchable.append(battery_site3)
 
 
 # Carbon Emissions Intensities
@@ -164,6 +177,9 @@ dombat_means = AV.Averaging(dombat)
 
 combat = [i[0] for i in battery_site2.getOutput(net_load).tolist()] # average community battery storage
 combat_means = AV.Averaging(combat)
+
+v2g = [i[0] for i in battery_site3.getOutput(net_load).tolist()]    # average V2G battery storage
+v2g_means = AV.Averaging(v2g)
 
 gross_gen = [i+j+k for i,j,k in zip(hydro,pv,sf)]                   # average gross renewable generation
 gross_gen_means = AV.Averaging(gross_gen)
@@ -295,6 +311,7 @@ figD.canvas.set_window_title('Average Daily Emissions In Each Quintile')
 
 
 # find annualised net load and total emissions with the energy system
+print("")
 print("New Energy System, Annual Net Emissions: %.2f tnCO2" % (sum(emissions)))
 print("")
 print("New Energy System, Annual Net Load: %.2f GWh" % (sum(net_load)/1000))
