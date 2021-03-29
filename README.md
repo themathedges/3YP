@@ -34,12 +34,14 @@ Installation cost = £6,000 ???
 Number of panels = ???
 
 ### Domestic Electricity Demand - loadAsset
-Dataset: data/oxon_class1_year_load.csv
+Dataset: data/ken_dom_annual_demand_per_household.csv
 <br />
-Number of installations = 1700 (number of households in Kennington)
+Number of installations = 1728 (number of households in Kennington in 2020)
 
 ### Non-Domestic Electricity Demand - ndAsset
-Dataset: ?
+Dataset: data/ken_non_dom_annual_demand_per_user.csv
+<br />
+Number of installations = 36 (number of non-domestic businesses in Kennington in 2020 ~ mainly shops, cafes)
 
 ### Electric Vehicle Electricity Demand - evAsset
 Dataset: ?
