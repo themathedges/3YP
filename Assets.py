@@ -5,10 +5,10 @@
 3YP basic asset module.
 Adapted from UoO EPG's energy management framework.
 Authors: Avinash Vijay, Scot Wheeler, Mathew Hedges,
-Minnie Karanjavala, Ravi Kohli
+Minnie Karanjavala, Ravi Kohli, Steven Jones
 """
 
-__version__ = '0.4'
+__version__ = '0.5'
 
 # import modules
 import pandas as pd
@@ -34,6 +34,63 @@ class Dispatchable:
         self.install_cost = 0
         self.lifetime = 25
         self.genFiT = 5.24 # feed in tariff p/kWh
+
+
+class hydroAsset(Non_Dispatchable):
+    """
+    Sandford hydro asset class
+
+    Parameters
+
+    ----------
+    capacity : float
+        Maximum power, kW.
+
+    dt : float
+        Time interval (hours)
+
+    T : int
+        Number of intervales
+        
+    maintenance_cost : float
+        Annual maintenance cost in £s
+    """
+    def __init__(self, hydroCapacity, profile_filepath, maintenance=100000, **kwargs):
+        super().__init__()
+        self.hydroCapacity = hydroCapacity
+        self.asset_type = 'HYDRO'
+        self.maintenance = maintenance * 100 # p per year
+        self.genFiT = 5.24  # p/kWh     
+        self.profile_filepath = profile_filepath
+        self.profile = self.hydroProfile()
+        
+    def hydroProfile(self):
+        df = pd.read_csv(self.profile_filepath, usecols=[1], 
+                         parse_dates=True, dayfirst=True) # kW
+        #print('hydro data coming...')
+        #print(df.info())
+        #print(df.head(50))
+        return df 
+
+    def getOutput(self, dt):
+        """
+        Return Sandford Hydro output
+
+        Parameters
+        ----------
+        dt : float
+            Time interval (hours)
+
+        Returns
+        -------
+        Sandford Hydro output : numpy array
+        """
+        gen = self.profile.values # this will return the 365*48 values in the hydro profile as a numpy array 
+        output = gen * dt # kWh
+        self.output = output
+        #print('hydro output coming...')
+        #print(output)
+        return output
 
 
 class pvAsset(Non_Dispatchable):
@@ -64,27 +121,27 @@ class pvAsset(Non_Dispatchable):
         self.maintenance = maintenance * 100 # p per year
         self.cf = self.solarProfile()
         self.pvInstallations = pvInstallations
+        #degradation_factor = 1-(annual_degradation*30) # 30 year lifetime (2020-2050)
+        #self.degradation_factor = degradation_factor
         
     def solarProfile(self):
         """
         Loads the kW/kWp hourly solar profile
 
-
         Returns
         -------
         kW/kWp solar profile
-
         """
         df = pd.read_csv(self.profile_filepath, index_col=0,
                          parse_dates=True, dayfirst=True)  # kW/kWp
-        print('original solar data coming...')
-        print(df.info())
-        print(df.head(50))
+        #print('original solar data coming...')
+        #print(df.info())
+        #print(df.head(50))
         return df  
 
     def getOutput(self, dt):
         """
-        Return PV output
+        Returns PV output
 
         Parameters
         ----------
@@ -101,13 +158,13 @@ class pvAsset(Non_Dispatchable):
                                       index=[(cfHH.index[-1] +
                                               timedelta(minutes=30))]))
         cfHH = cfHH.interpolate()
-        print('modified solar data coming...')
-        print(cfHH.info())
-        print(cfHH.head(50))
+        #print('modified solar data coming...')
+        #print(cfHH.info())
+        #print(cfHH.head(50))
         output = cfHH.values * self.pvCapacity * self.pvInstallations * dt # kWh
         self.output = output
-        print('solar output coming...')
-        print(output)
+        #print('solar output coming...')
+        #print(output)
         return output
 
 
@@ -129,7 +186,7 @@ class sfAsset(Non_Dispatchable):
     maintenance_cost : float
         Annual maintenance cost in £s
     """
-    def __init__(self, pvCapacity, pvPanels, profile_filepath='data/oxon_solar_2014.csv', install_cost=(6000/4),
+    def __init__(self, pvCapacity, pvPanels, annual_degradation, profile_filepath='data/oxon_solar_2014.csv', install_cost=(6000/4),
                  maintenance=100, **kwargs):
         super().__init__()
         self.profile_filepath = profile_filepath
@@ -139,16 +196,16 @@ class sfAsset(Non_Dispatchable):
         self.maintenance = maintenance * 100 # p per year
         self.cf = self.solarProfile()
         self.pvPanels = pvPanels
+        degradation_factor = 1-(annual_degradation*30)
+        self.degradation_factor = degradation_factor
         
     def solarProfile(self):
         """
         Loads the kW/kWp hourly solar farm profile
 
-
         Returns
         -------
         kW/kWp solar farm profile
-
         """
         df = pd.read_csv(self.profile_filepath, index_col=0,
                          parse_dates=True, dayfirst=True)  # kW/kWp
@@ -179,7 +236,7 @@ class sfAsset(Non_Dispatchable):
         #print('modified solar farm data coming...')
         #print(cfHH.info())
         #print(cfHH.head(50))
-        output = cfHH.values * self.pvCapacity * self.pvPanels * dt # kWh
+        output = cfHH.values * self.pvCapacity * self.pvPanels * self.degradation_factor * dt # kWh
         self.output = output
         #print('solar farm output coming...')
         #print(output)
@@ -198,7 +255,7 @@ class loadAsset(Non_Dispatchable):
     profile_filepath : str
         Filepath to load profile
     """
-    def __init__(self, nHouseholds, profile_filepath='data/ken_dom_annual_demand_per_household.csv', **kwargs):    
+    def __init__(self, nHouseholds, profile_filepath, **kwargs):    
         super().__init__()
         self.nHouseholds = nHouseholds
         self.asset_type = 'DOMESTIC_LOAD'
@@ -215,7 +272,7 @@ class loadAsset(Non_Dispatchable):
         
     def getOutput(self, dt):
         """
-        Return domestic demand
+        Returns domestic demand
 
         Parameters
         ----------
@@ -250,7 +307,6 @@ class ndAsset(Non_Dispatchable):
         -------
         Non-domestic demand : numpy array
     """
-  
     def __init__(self, nBusinesses, profile_filepath='data/ken_non_dom_annual_demand_per_user.csv', **kwargs):
         super().__init__()
         self.nBusinesses = nBusinesses
@@ -268,7 +324,7 @@ class ndAsset(Non_Dispatchable):
         
     def getOutput(self, dt):
         """
-        Return non-domestic demand
+        Returns non-domestic demand
 
         Parameters
         ----------
@@ -287,7 +343,7 @@ class ndAsset(Non_Dispatchable):
         return output
     
 
-#class evAsset(Dispatchable):
+#class evAsset(Non_Dispatchable):
 
     #Electric Vehicle asset class
 
@@ -337,59 +393,55 @@ class ndAsset(Non_Dispatchable):
     """
 
 
-#class hpAsset(Dispatchable):
-
-    #Heat Pump asset class
-
-    #Parameters
-    #----------
-    #nHouses : int
-    #    Number of houses
-        
-    #profile_filepath : str
-    #    Filepath to load profile
-
+class hpAsset(Non_Dispatchable):
     """
-    def __init__(self, nHouseholds, profile_filepath='?', **kwargs):
+    Heat Pump asset class
+
+    Parameters
+    ----------
+    nHouses : int
+        Number of houses
+        
+    profile_filepath : str
+        Filepath to load profile
+    """
+    def __init__(self, profile_filepath='data/centralheatpump.csv', **kwargs):
         super().__init__()
-        self.nHouseholds = nHouseholds
         self.asset_type = 'HEAT_PUMP_LOAD'
         self.install_cost = 0
         self.profile_filepath = profile_filepath
         self.profile = self.hpProfile()
         
     def hpProfile(self):
-        df = pd.read_csv(self.profile_filepath, usecols=[1]) # kW
-        print('heat pump load data coming...')
-        print(df.info())
-        print(df.head(50))
+        df = pd.read_csv(self.profile_filepath, usecols=[2]) # kWh
+        #print('heat pump load data coming...')
+        #print(df.info())
+        #print(df.head(50))
         return df
         
-    def getOutput(self, dt):
-    
-        #Return heat pump electricity demand
+    def getOutput(self):
+        """
+        Returns heat pump electricity demand
 
-        #Parameters
-        #----------
-        #dt : float
-        #    Time interval (hours)
+        Parameters
+        ----------
+        dt : float
+            Time interval (hours)
 
-        #Returns
-        #-------
-        #Heat pump electricity demand : numpy array
-        
-        hp = self.profile.values
-        output = hp * self.nHouseholds * dt # kWh
+        Returns
+        -------
+        Heat pump electricity demand : numpy array
+        """
+        output = self.profile.values # already in kWh
         self.output = output
-        print('heat pump load output coming...')
-        print(output)
+        #print('heat pump load output coming...')
+        #print(output)
         return output
-    """
 
 
 class PracticalBatteryAsset1(Dispatchable):
     """
-    1st life EV battery asset class
+    2nd life EV battery asset class
 
     Parameters
     ----------
@@ -411,11 +463,11 @@ class PracticalBatteryAsset1(Dispatchable):
     install_cost : float
         Install cost in £/kWh
     """
-    def __init__(self, dt, T, capacity, power, eff, nUsers1, install_cost=(27000/36)):
+    def __init__(self, dt, T, capacity, power, eff, nUsers, install_cost=(500/(36*0.8))):
         super().__init__()
-        self.nUsers1 = nUsers1
-        self.asset_type = '1_LIFE_EV_BATTERY'
-        self.capacity = capacity * self.nUsers1
+        self.nUsers = nUsers
+        self.asset_type = 'DOM_BAT'
+        self.capacity = capacity * self.nUsers
         self.power = power * dt
         self.eff = eff
         self.soc = np.ones(T) * self.capacity
@@ -457,7 +509,7 @@ class PracticalBatteryAsset1(Dispatchable):
 
 class PracticalBatteryAsset2(Dispatchable):
     """
-    Practical battery asset class
+    Community battery asset class
 
     Parameters
     ----------
@@ -479,11 +531,10 @@ class PracticalBatteryAsset2(Dispatchable):
     install_cost : float
         Install cost in £/kWh
     """
-    def __init__(self, dt, T, capacity, power, eff, nUsers2, install_cost=(500/(36*0.8))):
+    def __init__(self, dt, T, capacity, power, eff, install_cost=1):
         super().__init__()
-        self.nUsers2 = nUsers2
-        self.asset_type = '2_LIFE_EV_BATTERY'
-        self.capacity = 0.8 * capacity * self.nUsers2
+        self.asset_type = 'COM_BAT'
+        self.capacity = capacity 
         self.power = power * dt
         self.eff = eff
         self.soc = np.ones(T) * self.capacity
@@ -523,15 +574,20 @@ class PracticalBatteryAsset2(Dispatchable):
         return output
 
 
-class hydroAsset(Non_Dispatchable):
+class PracticalBatteryAsset3(Dispatchable):
     """
-    Sandford hydro asset class
+    1st life EV battery asset class
 
     Parameters
-
     ----------
     capacity : float
+        Battery capacity, kWh.
+
+    power : float
         Maximum power, kW.
+
+    eff : float
+        Charging/discharging efficiency between 0-1.
 
     dt : float
         Time interval (hours)
@@ -539,44 +595,50 @@ class hydroAsset(Non_Dispatchable):
     T : int
         Number of intervales
         
-    maintenance_cost : float
-        Annual maintenance cost in £s
+    install_cost : float
+        Install cost in £/kWh
     """
-    def __init__(self, hydroCapacity, profile_filepath='data/Sandford_hydro_generation_30_min_date.csv', maintenance=100000, **kwargs):
+    def __init__(self, dt, T, capacity, power, eff, nUsers, install_cost=(27000/36)):
         super().__init__()
-        self.hydroCapacity = hydroCapacity
-        self.asset_type = 'HYDRO'
-        self.maintenance = maintenance * 100 # p per year
-        self.genFiT = 5.24  # p/kWh     
-        self.profile_filepath = profile_filepath
-        self.profile = self.hydroProfile()
-        
-    def hydroProfile(self):
-        df = pd.read_csv(self.profile_filepath, usecols=[1], 
-                         parse_dates=True, dayfirst=True) # kW
-        #print('hydro data coming...')
-        #print(df.info())
-        #print(df.head(50))
-        return df 
+        self.nUsers = nUsers
+        self.asset_type = 'V2G'
+        self.capacity = capacity * self.nUsers
+        self.power = power * dt
+        self.eff = eff
+        self.soc = np.ones(T) * self.capacity
+        self.install_cost = install_cost * 100  # p/kWh
 
-    def getOutput(self, dt):
+    def getOutput(self, net_load):
         """
-        Return Sandford Hydro output
+        Battery control of charging/discharging in response to net load.
 
         Parameters
         ----------
-        dt : float
-            Time interval (hours)
+        net_load : numpy array
+            The net load, (load - nondispatchable gen).
 
         Returns
         -------
-        Sandford Hydro output : numpy array
+        Battery energy use profile : numpy array
         """
-        gen = self.profile.values # this will return the 365*48 values in the hydro profile as a numpy array 
-        output = gen * dt # kWh
+        T = len(net_load)
+        output = np.zeros((T, 1))
+        for j in range(len(net_load)):
+            if j == 0:
+                soc = self.capacity
+            else:
+                soc = self.soc[j-1]
+
+            if net_load[j] > 0:  # use battery
+                output[j] = min(self.power, net_load[j], self.eff*soc)
+                self.soc[j] = soc - (1/self.eff)*output[j]
+            elif net_load[j] < 0:  # charge battery
+                output[j] = max(-self.power, net_load[j],
+                                - (1/self.eff) * (self.capacity - soc))
+                self.soc[j] = soc - self.eff * output[j]
+            elif net_load[j] == 0:  # do nothing
+                self.soc[j] = soc
         self.output = output
-        #print('hydro output coming...')
-        #print(output)
         return output
 
 

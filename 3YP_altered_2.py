@@ -8,7 +8,7 @@ Authors: Avinash Vijay, Scot Wheeler, Mathew Hedges,
 Minnie Karanjavala, Ravi Kohli
 """
 
-__version__ = '0.4'
+__version__ = '0.6'
 
 # import modules
 import numpy as np
