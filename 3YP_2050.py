@@ -48,13 +48,13 @@ all_assets = []
 # Domestic Solar PV
 dom_pvCapacity = 4                                                              # 4 kW installation
 annual_degradation = 0.01                                                       # solar panels degrade in generation by 1% pa
-nInstallations = 800                                                            # 800 domestic installations
+nInstallations = 400                                                            # 800 domestic installations
 pv_site1 = AS.pvAsset(dom_pvCapacity, nInstallations)                          
 non_dispatchable.append(pv_site1)
 
 # Solar PV Farm
 sf_pvCapacity = 0.4                                                             # 400 W panels
-nPanels = 30000                                                                 # 30,000 panel solar farm
+nPanels = 20000                                                                 # 30,000 panel solar farm
 pv_site2 = AS.sfAsset(sf_pvCapacity, nPanels, annual_degradation)              
 non_dispatchable.append(pv_site2)
 
@@ -91,24 +91,25 @@ non_dispatchable.append(load_site4)
 # Battery Storage
 # Domestic Batteries - 2nd life EVs
 nUsers1 = 100
-capacity1 = 36*0.8
-power1 = 40                                                               
-eff1 = 0.7
+capacity1 = 40*0.8
+power1 = 50                                                               
+eff1 = 0.8
 battery_site1 = AS.PracticalBatteryAsset1(dt, T, capacity1, power1, eff1, nUsers1) 
 dispatchable.append(battery_site1)
 
-# Community Battery - costs?
-capacity2 = 2100
-power2 = 500
+# Community Battery - Tesla Powerpack
+nPacks = 20 # this number is a complete guess, needs to be optimised
+capacity2 = 232
+power2 = 130
 eff2 = 0.9
-battery_site2 = AS.PracticalBatteryAsset2(dt, T, capacity2, power2, eff2) 
+battery_site2 = AS.PracticalBatteryAsset2(dt, T, capacity2, power2, eff2, nPacks) 
 dispatchable.append(battery_site2)
 
 # V2G Storage - how do we know WHEN (times of day) we can use V2G storage?
 nUsers3 = 100
-capacity3 = 36
-power3 = 40
-eff3 = 0.7
+capacity3 = 40
+power3 = 50
+eff3 = 1
 battery_site3 = AS.PracticalBatteryAsset3(dt, T, capacity3, power3, eff3, nUsers3) 
 dispatchable.append(battery_site3)
 
@@ -118,8 +119,6 @@ loss = 0.08                                                                     
 emission_intensity = EM.Emissions(loss)                                                     # numpy array gCO2/kWh
 emission_intensity = [i[0] for i in emission_intensity.getEmissionIntensity().tolist()]     # list gCO2/kWh
 emission_intensity = [i/1000000 for i in emission_intensity]                                # list tnCO2/kWh
-#print('carbon intensity of electricity consumption (list) coming...')
-#print(emission_intensity)
 
 
 ############################################
@@ -141,7 +140,7 @@ net_load, disp_load, non_disp_load = energy_system.basic_energy_balance()
 #######################################
 
 
-# _means are lists of 5 nested lists, where each nested list is an averaged profile of over 1/5th of the year
+# _means are lists of 5 nested lists, where each nested list is the averaged dailyprofile of over 1/5th of the year
 net_load = [i[0] for i in net_load.tolist()]                        # average net load
 net_load_means = AV.Averaging(net_load)
 

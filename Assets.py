@@ -468,7 +468,7 @@ class PracticalBatteryAsset1(Dispatchable):
         self.nUsers = nUsers
         self.asset_type = 'DOM_BAT'
         self.capacity = capacity * self.nUsers
-        self.power = power * dt
+        self.power = power * dt * self.nUsers
         self.eff = eff
         self.soc = np.ones(T) * self.capacity
         self.install_cost = install_cost * 100  # p/kWh
@@ -531,11 +531,12 @@ class PracticalBatteryAsset2(Dispatchable):
     install_cost : float
         Install cost in £/kWh
     """
-    def __init__(self, dt, T, capacity, power, eff, install_cost=1):
+    def __init__(self, dt, T, capacity, power, eff, nPacks, install_cost=1):
         super().__init__()
         self.asset_type = 'COM_BAT'
-        self.capacity = capacity 
-        self.power = power * dt
+        self.nPacks = nPacks
+        self.capacity = capacity * self.nPacks
+        self.power = power * dt * self.nPacks
         self.eff = eff
         self.soc = np.ones(T) * self.capacity
         self.install_cost = install_cost * 100  # p/kWh
@@ -603,7 +604,7 @@ class PracticalBatteryAsset3(Dispatchable):
         self.nUsers = nUsers
         self.asset_type = 'V2G'
         self.capacity = capacity * self.nUsers
-        self.power = power * dt
+        self.power = power * dt * self.nUsers
         self.eff = eff
         self.soc = np.ones(T) * self.capacity
         self.install_cost = install_cost * 100  # p/kWh
