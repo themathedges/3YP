@@ -43,7 +43,7 @@ Ideal Kennington demand per household (after shifting and reduction): data/ideal
 ### Non-Domestic Electricity Demand - ndAsset
 Dataset: data/ken_non_dom_annual_demand_per_user.csv
 <br />
-Number of installations = 36 (number of non-domestic businesses in Kennington in 2020 ~ mainly shops, cafes)
+Number of Businesses = 36 (number of non-domestic businesses in Kennington in 2020 ~ mainly shops, cafes)
 
 ### Electric Vehicle Electricity Demand - evAsset
 Dataset: ?
