@@ -69,13 +69,13 @@ non_dispatchable.append(hydro_site1)
 # Loads
 # Domestic Load
 domestic_dataset = 'data/ideal_domestic_demand_per_household_v1.csv'
-nHouseholds = 1728
+nHouseholds = 1728                                                              # Minnie will update this going forward :)
 load_site1 = AS.loadAsset(nHouseholds, domestic_dataset)   
 non_dispatchable.append(load_site1)
 
 # Non-Domestic Load
-nBusinesses = 72                         # doubled from 2020
-load_site2 = AS.ndAsset(nBusinesses)     # non-domestic load
+nBusinesses = 72                                                                # doubled from 2020
+load_site2 = AS.ndAsset(nBusinesses)     
 non_dispatchable.append(load_site2)
 
 # EV Charging Load

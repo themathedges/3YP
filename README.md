@@ -68,9 +68,9 @@ Battery data: Nissan Leaf EV
 <br />
 Power capacity = 6.6 kW (standard wall charge)
 <br />
-Maximum storage capacity = 36 kWh
+Maximum storage capacity = 40 kWh
 <br />
-Efficiency = 70%
+Efficiency = 80%
 <br />
 Annual maintenance = ?
 <br />
