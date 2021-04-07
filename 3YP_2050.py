@@ -69,7 +69,7 @@ non_dispatchable.append(hydro_site1)
 # Loads
 # Domestic Load
 domestic_dataset = 'data/ideal_domestic_demand_per_household_v1.csv'
-nHouseholds = 1728                                                              # Minnie will update this going forward :)
+nHouseholds = 2574  # predicted households in Ken by 2050
 load_site1 = AS.loadAsset(nHouseholds, domestic_dataset)   
 non_dispatchable.append(load_site1)
 
@@ -195,6 +195,7 @@ gross_load_means = AV.Averaging(gross_load)
 # overall plotting style
 plt.style.use('seaborn')
 """
+
 # 1st 5th of the year     # this is plotting average profiles found over the dates 1st Jan-14th March; the "Average.py" function finds these average profiles over this period
 fig1 = PT.genPlotting(hydro_means[0], pv_means[0], sf_means[0], net_load_means[0], gross_gen_means[0], disp_load_means[0])
 fig1.canvas.set_window_title('1st Jan - 14th Mar')
