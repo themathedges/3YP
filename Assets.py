@@ -343,20 +343,21 @@ class ndAsset(Non_Dispatchable):
         return output
     
 
-#class evAsset(Non_Dispatchable):
+class evAsset(Non_Dispatchable):
+    """
+    Electric Vehicle asset class
 
-    #Electric Vehicle asset class
-
-    #Parameters
-    #----------
-    #nCars : int
-    #    Number of electric vehicles
+    Parameters
+    ----------
+    nCars : int
+       Number of electric vehicles
         
-    #profile_filepath : str
-    #    Filepath to load profile
+    profile_filepath : str
+       Filepath to load profile
 
     """
-    def __init__(self, nCars, profile_filepath='?', **kwargs):
+    
+    def __init__(self, nCars, profile_filepath='data/EV_Demand_1.csv', **kwargs):
         super().__init__()
         self.nCars = nCars
         self.asset_type = 'EV_LOAD'
@@ -366,31 +367,32 @@ class ndAsset(Non_Dispatchable):
         
     def evProfile(self):
         df = pd.read_csv(self.profile_filepath, usecols=[1]) # kW
-        print('electric vehicle load data coming...')
-        print(df.info())
-        print(df.head(50))
+        # print('electric vehicle load data coming...')
+        # print(df.info())
+        # print(df.head(50))
         return df
         
     def getOutput(self, dt):
-    
-        #Return electric vehicle electricity demand
+        """
+        Return electric vehicle electricity demand
 
-        #Parameters
-        #----------
-        #dt : float
-        #    Time interval (hours)
+        Parameters
+        ----------
+        dt : float
+           Time interval (hours)
 
-        #Returns
-        #-------
-        #Electric vehicle electricity demand : numpy array
-        
+        Returns
+        -------
+        Electric vehicle electricity demand : numpy array
+        """
+
         ev = self.profile.values
         output = ev * self.nCars * dt # kWh
         self.output = output
-        print('electric vehicle load output coming...')
-        print(output)
+        # print('electric vehicle load output coming...')
+        # print(output)
         return output
-    """
+    
 
 
 class hpAsset(Non_Dispatchable):

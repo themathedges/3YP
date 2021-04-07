@@ -74,14 +74,14 @@ load_site1 = AS.loadAsset(nHouseholds, domestic_dataset)
 non_dispatchable.append(load_site1)
 
 # Non-Domestic Load
-nBusinesses = 72                         # doubled from 2020
+nBusinesses = 46                         # business growth scaled with household growth
 load_site2 = AS.ndAsset(nBusinesses)     # non-domestic load
 non_dispatchable.append(load_site2)
 
 # EV Charging Load
-#nCars = ?
-#load_site3 = AS.ndAsset(nCars)           
-#non_dispatchable.append(load_site3)
+nCars = 3599                            # ASSUMPTION: all cars are EV by 2050
+load_site3 = AS.evAsset(nCars)           
+non_dispatchable.append(load_site3)
 
 # Heat Pump Electricity Load
 load_site4 = AS.hpAsset()    
@@ -165,8 +165,8 @@ dom_means = AV.Averaging(dom)
 nondom = [i[0] for i in load_site2.getOutput(dt).tolist()]          # average non-domestic demand
 nondom_means = AV.Averaging(nondom)
 
-#ev = [i[0] for i in load_site3.getOutput(dt).tolist()]              # average EV electricity demand
-#ev_means = AV.Averaging(ev)
+ev = [i[0] for i in load_site3.getOutput(dt).tolist()]              # average EV electricity demand
+ev_means = AV.Averaging(ev)
 
 hp = [i[0] for i in load_site4.getOutput().tolist()]                # average heat pump electricity demand
 hp_means = AV.Averaging(hp)
@@ -194,7 +194,7 @@ gross_load_means = AV.Averaging(gross_load)
 
 # overall plotting style
 plt.style.use('seaborn')
-"""
+
 
 # 1st 5th of the year     # this is plotting average profiles found over the dates 1st Jan-14th March; the "Average.py" function finds these average profiles over this period
 fig1 = PT.genPlotting(hydro_means[0], pv_means[0], sf_means[0], net_load_means[0], gross_gen_means[0], disp_load_means[0])
@@ -223,25 +223,26 @@ fig5.canvas.set_window_title('20th Oct - 31st Dec')
 
 
 # 1st 5th of the year     # this is plotting average profiles found over the dates 1st Jan-14th March; the "Average.py" function finds these average profiles over this period
-Fig1 = PT.loadPlotting(net_load_means[0], gross_load_means[0], dom_means[0], nondom_means[0], None, hp_means[0])#, ev_means[0], hp_means[0])
+Fig1 = PT.loadPlotting(net_load_means[0], gross_load_means[0], dom_means[0], nondom_means[0], ev_means[0], hp_means[0])
 Fig1.canvas.set_window_title('1st Jan - 14th Mar')
 
 # 2nd 5th of the year
-Fig2 = PT.loadPlotting(net_load_means[1], gross_load_means[1], dom_means[1], nondom_means[1], None, hp_means[1])#,ev_means[1], hp_means[1])
+Fig2 = PT.loadPlotting(net_load_means[1], gross_load_means[1], dom_means[1], nondom_means[1], ev_means[1], hp_means[1])
 Fig2.canvas.set_window_title('15th Mar - 26th May')
 
 # 3rd 5th of the year
-Fig3 = PT.loadPlotting(net_load_means[2], gross_load_means[2], dom_means[2], nondom_means[2], None, hp_means[2])#, ev_means[2], hp_means[2])
+Fig3 = PT.loadPlotting(net_load_means[2], gross_load_means[2], dom_means[2], nondom_means[2], ev_means[2], hp_means[2])
 Fig3.canvas.set_window_title('27th May - 7th Aug')
 
 # 4th 5th of the year
-Fig4 = PT.loadPlotting(net_load_means[3], gross_load_means[3], dom_means[3], nondom_means[3], None, hp_means[3])#, ev_means[3], hp_means[3])
+Fig4 = PT.loadPlotting(net_load_means[3], gross_load_means[3], dom_means[3], nondom_means[3], ev_means[3], hp_means[3])
 Fig4.canvas.set_window_title('8th Aug - 19th Oct')
 
 # 5th 5th of the year
-Fig5 = PT.loadPlotting(net_load_means[4], gross_load_means[4], dom_means[4], nondom_means[4], None, hp_means[4])#, ev_means[4], hp_means[4])
+Fig5 = PT.loadPlotting(net_load_means[4], gross_load_means[4], dom_means[4], nondom_means[4], ev_means[4], hp_means[4])
 Fig5.canvas.set_window_title('20th Oct - 31st Dec') 
-"""
+
+
 
 ##########################################
 ### STEP 7: calculate and plot emissions

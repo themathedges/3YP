@@ -56,7 +56,7 @@ def loadPlotting(net_load_mean, non_disp_load_mean, dom_mean, nondom_mean, ev_me
     ax[1][1].xaxis.set_major_formatter(myFmt)   # apply HH:MM format to the x axis data
     ax[1][1].grid(b=True)
     
-    #ax[2][0].plot(x_axis, ev_mean)
+    ax[2][0].plot(x_axis, ev_mean)
     ax[2][0].set_ylabel('kWh')
     ax[2][0].set_xlabel('Time')
     ax[2][0].set_title('Electric Vehicle Load')
