@@ -27,3 +27,15 @@ Half hourly demand profile (kW) for an average non-domestic user in Kennington (
 
 ### EV_demand_1.csv
 Half hourly demand profile (kW) for 40kWh battery Nissan Leaf. A smart charge point is used to limit the charging times between 11pm-8:30am 
+
+### centralheatpump.csv 
+Half hourly (kWh) annual demand profile for the central heat pump
+
+### domestic_demand.csv
+Half hourly annual demand profile (kWh) for the domestic electrification of gas for an average house in Kennington. Demand for space heating, hot water heating and cooking included.  
+
+### nondomestic_demand.csv
+Half hourly annual demand profile (kWh) for the total non-domestic electrification of gas in Kennington. 
+
+### passivhaus_demand.csv
+Half hourly annual demand profile (kWh) for a home built to Passivhaus standards, for new builds leading up to 2050. Demand for space heating, hot water heating and cooking included. 
