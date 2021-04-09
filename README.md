@@ -3,61 +3,60 @@
 ## Non-Distpatchable Energy Assets In Kennington
 
 ### Sandford Hydro - hydroAsset
-Dataset: data/Sandford_hydro_generation_30_min_date.csv
-<br />
-Power output = 450 kWp
+Peak power output = 450 kWp
 <br />
 Annual maintenance = £100,000
 <br />
 Number of installations = 1
 
+
 ### Domestic Solar PV Panels - pvAsset
-Dataset: data/oxon_solar_2014.csv
-<br />
 Peak power output = 4 kWp
 <br />
 Annual maintenance = £100
 <br />
 Installation cost = £6,000
 <br />
-Number of installations = 200-800
+Number of installations = 100 (2020), 400 (2050)
+
 
 ### Solar PV Farm - sfAsset
-Dataset: data/oxon_solar_2014.csv 
+Peak power output = ???
 <br />
-Peak power output = 400 W 
-<br />
-Annual maintenance = £100 
+Annual maintenance = ??? 
 <br />
 Installation cost = ???
 <br />
 Number of panels = 30,000
 
-### Domestic Electricity Demand - loadAsset
-Dataset: data/ken_dom_annual_demand_per_household.csv
-<br />
-Number of installations = 1728 (number of households in Kennington in 2020)
 
-Ideal Kennington demand per household (after shifting and reduction): data/ideal_domestic_demand_per_household_v1.csv
+### Domestic Electricity Demand - loadAsset
+Number of households = 1985 (2020), 2574 (2050)
+
 
 ### Non-Domestic Electricity Demand - ndAsset
-Dataset: data/ken_non_dom_annual_demand_per_user.csv
-<br />
-Number of Businesses = 36 (number of non-domestic businesses in Kennington in 2020 ~ mainly shops, cafes)
+Number of businesses = 36 (2020), 46 (2050)
+
 
 ### Electric Vehicle Electricity Demand - evAsset
-Dataset: ?
+Number of cars = 1 (2020), 3599 (2050)
 
-### Water-Source Heat Pump System - hpAsset
-Dataset: data/centralheatpump.csv
-<br />
-Power input = ???
+
+### Central Water-Source Heat Pump System - hpAsset
+Peak power input = ???
 <br />
 Annual maintenance = ???
 <br />
 Installation cost = ???
 <br />
 Number of installations = 1700 (number of households in Kennington)
+
+
+### Shoebox Heat Pump Systems - shoeAsset
+
+
+### Shoebox Heat Pump Systems - ndShoeAsset
+
 
 <br />
 
@@ -78,6 +77,7 @@ Installation cost = £27,000 (Nissan Leaf EV)
 <br />
 Number of installations = 700 (50% of houses in Kennington owning at least one car)
 
+
 ### Community Battery - PracticalBatteryAsset2
 Battery data: Nissan Leaf EV
 <br />
@@ -93,14 +93,32 @@ Installation cost = £500 (typical repurposed EV battery)
 <br />
 Number of installations = 200
 
-### Octopus Energy Supplier - gridAsset
-
 <br />
 
 ## Datasets
 
 ### Sandford Hydro
-gen_2050_export_df_v1.csv : version 1 of 2050 Sandford Hydro Generation Data predicted from linear regression model
+Sandford_hydro_generation_30_min_date.csv : 2020 generation from 
+gen_2050_export_df_v1.csv : 2050 generation predicted from linear regression model
+
+### Solar
+oxon_solar_2014.csv : 2014 generation per typical 4 kW installation
+
+### Heat Pump
+centralheatpump.csv : central heat pump load
+domestic_demand.csv : domestic heat pump load per house
+nondomestic_demand.csv : non-domestic heat pump load per user
+
+### Loads
+EV_demand1 : EV load per vehicle
+ken_dom_annual_demand_per_household_2 : 2020 domestic load per house
+ideal_domestic_demand_per_household_v1 : 2050 domestic load per house predicted from
+ken_non_dom_annual_demand_per_user : non_domestic load per user
+
+### Storage
+EV Batteries
+Community Batteries
+Domestic Storage Batteries
 
 ### Outgoing Tariff
 octopus_outgoing_2018_SE.csv : 2018 data for Octopus Outgoing tariff (pence/kWh) for the South East of UK. Data obtained from <a href="https://octopus.energy/blog/outgoing/">Octopus Outgoing</a>
