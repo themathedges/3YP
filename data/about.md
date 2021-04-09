@@ -26,4 +26,4 @@ Half hourly power (kW) from domestic demand of an average houshold in Kennington
 Half hourly demand profile (kW) for an average non-domestic user in Kennington (eg a cafe, shop etc) 
 
 ### EV_demand_1.csv
-Half hourly demand profile (kW) for 40kWh battery Nissan Leaf. A smart charge point is used to limit the charging times between 11pm-8:30am 
+Half hourly demand profile (kW) for 40kWh battery Nissan Leaf. A smart charge point is used to limit the charging times between 11pm-5am 
