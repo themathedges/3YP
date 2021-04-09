@@ -86,13 +86,13 @@ load_site7 = AS.ndAsset(nSchools, school_dataset)
 non_dispatchable.append(load_site7)
 
 # EV Day Charging Load
-day_dataset = #?
+day_dataset = 'data/EV_Demand_day_1'
 nCars = 3599                                                                    # all cars are EVs by 2050
 load_site3 = AS.evAsset(nCars, day_dataset)           
 non_dispatchable.append(load_site3)
 
 # EV Night Charging Load
-night_dataset = #?
+night_dataset = 'data/EV_Demand_night_1'
 load_site9 = AS.evAsset(nCars, night_dataset)
 non_dispatchable.append(load_site9)
 

@@ -75,7 +75,7 @@ non_dispatchable.append(load_site1)
 
 # Non-Domestic Load
 nondomestic_dataset = 'data/ken_non_dom_annual_demand_per_user.csv'
-nBusinesses = 36
+nBusinesses = 36                                                                # businesses in Kennington
 load_site2 = AS.ndAsset(nBusinesses, nondomestic_dataset)    
 non_dispatchable.append(load_site2)
 
@@ -86,13 +86,13 @@ load_site7 = AS.ndAsset(nSchools, school_dataset)
 non_dispatchable.append(load_site7)
 
 # EV Day Charging Load
-day_dataset = #?
+day_dataset = 'data/EV_Demand_day_1'
 nCars = 1                                                                       # number of EVs 
 load_site3 = AS.evAsset(nCars, day_dataset)            
 non_dispatchable.append(load_site3)
 
 # EV Night Charging Load
-night_dataset = #?
+night_dataset = 'data/EV_Demand_night_1'
 load_site9 = AS.evAsset(nCars, night_dataset)
 non_dispatchable.append(load_site9)
 
