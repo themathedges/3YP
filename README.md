@@ -38,6 +38,10 @@ Number of households = 1985 (2020), 2574 (2050)
 Number of businesses = 36 (2020), 46 (2050)
 
 
+### Schools Electricity Demand - ndAsset
+Number of schooks = ???
+
+
 ### Electric Vehicle Electricity Demand - evAsset
 Number of cars = 1 (2020), 3599 (2050)
 
@@ -57,7 +61,7 @@ Number of installations = number of households
 ### Shoebox Heat Pump Systems - hpAsset
 Number of installations = number of businesses
 
-
+<br />
 <br />
 
 ## Dispatchable Energy Assets In Kennington
@@ -107,13 +111,14 @@ Installation cost = £27,000 (Nissan Leaf EV)
 <br />
 Number of installations = number of households with EV
 
-
+<br />
 <br />
 
 ## Datasets
 
 ### Sandford Hydro
 Sandford_hydro_generation_30_min_date.csv : 2020 generation from 
+<br />
 gen_2050_export_df_v1.csv : 2050 generation predicted from linear regression model
 
 ### Solar
@@ -121,20 +126,29 @@ oxon_solar_2014.csv : 2014 generation in kW/kWp
 
 ### Heat Pump
 centralheatpump.csv : central heat pump load
+<br />
 domestic_demand.csv : domestic heat pump load per house
+<br />
 nondomestic_demand.csv : non-domestic heat pump load per user
+<br />
 passivhaus_demand.csv : future heating demand of future new builds
 
 ### Loads
 EV_Demand_day_1.csv : EV load per vehicle during daytime
+<br />
 EV_demand_night_1.csv : EV load per vehicle during nighttime
+<br />
 ken_dom_annual_demand_per_household_2.csv : 2020 domestic load per house
+<br />
 ideal_domestic_demand_per_household_v1.csv : 2050 domestic load per house predicted from
+<br />
 ken_non_dom_annual_demand_per_user.csv : non_domestic load per user
 
 ### Storage
 Nissan Leaf : EV Batteries 
+<br />
 Tesla Powerpack 2 : Community Battery
+<br />
 Nissan Leaf at 80% efficiency and capacity : Domestic Storage Batteries
 
 ### Outgoing Tariff
