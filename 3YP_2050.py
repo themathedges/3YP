@@ -46,14 +46,14 @@ all_assets = []
 
 # PV Generation
 # Domestic Solar PV
-dom_pvCapacity = 4                                                              # 4 kW installation
+dom_pvCapacity = 4                                                              # 4 kW domestic PV installations
 annual_degradation = 0                                                          # solar panels degrade in generation by 1% pa
 nInstallations = 2574                                                           # every household installs domestic PV
 pv_site1 = AS.pvAsset(dom_pvCapacity, nInstallations)                          
 non_dispatchable.append(pv_site1)
 
 # Solar PV Farm
-sf_pvCapacity = 0.45                                                            # 450 W panels
+sf_pvCapacity = 0.45                                                            # 450 W PV panels
 nPanels = 45000                                                                 # 45,000 panel solar farm
 pv_site2 = AS.sfAsset(sf_pvCapacity, nPanels, annual_degradation)              
 non_dispatchable.append(pv_site2)
@@ -69,7 +69,7 @@ non_dispatchable.append(hydro_site1)
 # Loads
 # Domestic Load
 domestic_dataset = 'data/ideal_domestic_demand_per_household_v1.csv'
-nHouseholds = 2574                                                              # predicted households in Ken by 2050
+nHouseholds = 2574                                                              # predicted households in Kennington
 load_site1 = AS.loadAsset(nHouseholds, domestic_dataset)   
 non_dispatchable.append(load_site1)
 
@@ -81,7 +81,7 @@ non_dispatchable.append(load_site2)
 
 # School Load
 school_dataset = #?
-nSchools = #?
+nSchools = #?                                                                   # schools in Kennington
 load_site7 = AS.ndAsset(nSchools, school_dataset)
 non_dispatchable.append(load_site7)
 
@@ -105,15 +105,15 @@ non_dispatchable.append(load_site4)
 # Shoebox Heat Pumps Load
 domestic_shoebox_dataset = 'data/domestic_demand.csv'
 nondomestic_shoebox_dataset = 'data/nondomestic_demand.csv'
-load_site5 = AS.hpAsset(nHouseholds, domestic_shoebox_dataset) 
-load_site6 = AS.hpAsset(nPumps * (46/36), nondomestic_shoebox_dataset) 
+load_site5 = AS.hpAsset(nHouseholds, domestic_shoebox_dataset)                  # domestic shoebox heat pumps
+load_site6 = AS.hpAsset(nPumps * (46/36), nondomestic_shoebox_dataset)          # non-domestic shoebox heat pumps
 non_dispatchable.append(load_site5) 
 non_dispatchable.append(load_site6) 
 
 
 # Battery Storage
 # Domestic Batteries - 2nd life EVs
-nUsers1 = 2574
+nUsers1 = 2574                                                                  # domestic storage = domestic PV installations
 capacity1 = 40*0.8
 power1 = 50                                                               
 eff1 = 0.8
@@ -129,7 +129,7 @@ battery_site2 = AS.PracticalBatteryAsset2(dt, T, capacity2, power2, eff2, nPacks
 dispatchable.append(battery_site2)
 
 # V2G Storage - how do we know WHEN (times of day) we can use V2G storage?
-nUsers3 = 3599
+nUsers3 = 3599                                                                  # EVs in Kennington
 capacity3 = 40
 power3 = 50
 eff3 = 1
