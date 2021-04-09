@@ -357,7 +357,7 @@ class evAsset(Non_Dispatchable):
 
     """
     
-    def __init__(self, nCars, profile_filepath='data/EV_Demand_1.csv', **kwargs):
+    def __init__(self, nCars, profile_filepath='data/EV_Demand_night_1.csv', **kwargs):
         super().__init__()
         self.nCars = nCars
         self.asset_type = 'EV_LOAD'
