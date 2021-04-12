@@ -307,7 +307,7 @@ class ndAsset(Non_Dispatchable):
         -------
         Non-domestic demand : numpy array
     """
-    def __init__(self, nBusinesses, profile_filepath='data/ken_non_dom_annual_demand_per_user.csv', **kwargs):
+    def __init__(self, nBusinesses, profile_filepath, **kwargs):
         super().__init__()
         self.nBusinesses = nBusinesses
         self.asset_type = 'NON_DOMESTIC_LOAD'
@@ -357,7 +357,7 @@ class evAsset(Non_Dispatchable):
 
     """
     
-    def __init__(self, nCars, profile_filepath='data/EV_Demand_night_1.csv', **kwargs):
+    def __init__(self, nCars, profile_filepath, **kwargs):
         super().__init__()
         self.nCars = nCars
         self.asset_type = 'EV_LOAD'
@@ -394,7 +394,6 @@ class evAsset(Non_Dispatchable):
         return output
     
 
-
 class hpAsset(Non_Dispatchable):
     """
     Heat Pump asset class
@@ -407,8 +406,9 @@ class hpAsset(Non_Dispatchable):
     profile_filepath : str
         Filepath to load profile
     """
-    def __init__(self, profile_filepath='data/centralheatpump.csv', **kwargs):
+    def __init__(self, nPumps, profile_filepath, **kwargs):
         super().__init__()
+        self.nPumps = nPumps
         self.asset_type = 'HEAT_PUMP_LOAD'
         self.install_cost = 0
         self.profile_filepath = profile_filepath
@@ -434,7 +434,7 @@ class hpAsset(Non_Dispatchable):
         -------
         Heat pump electricity demand : numpy array
         """
-        output = self.profile.values # already in kWh
+        output = self.nPumps * self.profile.values # already in kWh
         self.output = output
         #print('heat pump load output coming...')
         #print(output)

@@ -1,64 +1,68 @@
 # 3YP Overall Energy System Model
+<br />
 
 ## Non-Distpatchable Energy Assets In Kennington
 
 ### Sandford Hydro - hydroAsset
-Dataset: data/Sandford_hydro_generation_30_min_date.csv
-<br />
-Power output = 450 kWp
+Peak power output = 450 kWp
 <br />
 Annual maintenance = £100,000
 <br />
 Number of installations = 1
 
+
 ### Domestic Solar PV Panels - pvAsset
-Dataset: data/oxon_solar_2014.csv
-<br />
 Peak power output = 4 kWp
 <br />
 Annual maintenance = £100
 <br />
 Installation cost = £6,000
 <br />
-Number of installations = 200-800
+Number of installations = 2.8% of households (2020), 100% of households (2050)
+
 
 ### Solar PV Farm - sfAsset
-Dataset: data/oxon_solar_2014.csv 
+Peak power output = 20 MW
 <br />
-Peak power output = 400 W 
-<br />
-Annual maintenance = £100 
+Annual maintenance = ??? 
 <br />
 Installation cost = ???
 <br />
-Number of panels = 30,000
+Number of panels = 45,000
+
 
 ### Domestic Electricity Demand - loadAsset
-Dataset: data/ken_dom_annual_demand_per_household.csv
-<br />
-Number of installations = 1728 (number of households in Kennington in 2020)
+Number of households = 1985 (2020), 2574 (2050)
 
-Ideal Kennington demand per household (after shifting and reduction): data/ideal_domestic_demand_per_household_v1.csv
 
 ### Non-Domestic Electricity Demand - ndAsset
-Dataset: data/ken_non_dom_annual_demand_per_user.csv
-<br />
-Number of Businesses = 36 (number of non-domestic businesses in Kennington in 2020 ~ mainly shops, cafes)
+Number of businesses = 36 (2020), 46 (2050)
+
+
+### Schools Electricity Demand - ndAsset
+Number of schooks = ???
+
 
 ### Electric Vehicle Electricity Demand - evAsset
-Dataset: ?
+Number of cars = 1 (2020), 3599 (2050)
 
-### Water-Source Heat Pump System - hpAsset
-Dataset: data/centralheatpump.csv
-<br />
-Power input = ???
+
+### Central Water-Source Heat Pump System - hpAsset
+Peak power input = ???
 <br />
 Annual maintenance = ???
 <br />
 Installation cost = ???
-<br />
-Number of installations = 1700 (number of households in Kennington)
 
+
+### Shoebox Heat Pump Systems - hpAsset
+Number of installations = number of households
+
+
+### Shoebox Heat Pump Systems - hpAsset
+Number of installations = number of businesses
+
+<br />
 <br />
 
 ## Dispatchable Energy Assets In Kennington
@@ -66,41 +70,87 @@ Number of installations = 1700 (number of households in Kennington)
 ### Domestic Battery Storage - PracticalBatteryAsset1
 Battery data: Nissan Leaf EV
 <br />
-Power capacity = 6.6 kW (standard wall charge)
+Power capacity = 50 kW (rapid charge)
 <br />
-Maximum storage capacity = 36 kWh
+Maximum storage capacity = 32 kWh (80% of original)
 <br />
-Efficiency = 70%
+Efficiency = 80%
 <br />
-Annual maintenance = ?
+Annual maintenance = ???
+<br />
+Installation cost = ???
+<br />
+Number of installations = number of households with PV
+
+
+### Community Battery - PracticalBatteryAsset2
+Battery data: Tesla Powerpack 2
+<br />
+Power capacity = 500 kW
+<br />
+Maximum storage capacity = 4.2 MWh
+<br />
+Efficiency = 100%
+<br />
+Annual maintenance = ???
+<br />
+Installation cost = ???
+
+
+### V2G - PracticalBatteryAsset3
+Battery data: Nissan Leaf EV
+<br />
+Power capacity = 50 kW (rapid charge)
+<br />
+Maximum storage capacity = 40 kWh
+<br />
+Efficiency = 100%
+<br />
+Annual maintenance = ???
 <br />
 Installation cost = £27,000 (Nissan Leaf EV)
 <br />
-Number of installations = 700 (50% of houses in Kennington owning at least one car)
+Number of installations = number of households with EV
 
-### Community Battery - PracticalBatteryAsset2
-Battery data: Nissan Leaf EV
 <br />
-Power capacity = 6.6 kW
-<br />
-Maximum storage capacity = 28.8 kWh (80% of original capacity)
-<br />
-Efficiency = 70%
-<br />
-Annual maintenance = ?
-<br />
-Installation cost = £500 (typical repurposed EV battery)
-<br />
-Number of installations = 200
-
-### Octopus Energy Supplier - gridAsset
-
 <br />
 
 ## Datasets
 
 ### Sandford Hydro
-gen_2050_export_df_v1.csv : version 1 of 2050 Sandford Hydro Generation Data predicted from linear regression model
+Sandford_hydro_generation_30_min_date.csv : 2020 generation from 
+<br />
+gen_2050_export_df_v1.csv : 2050 generation predicted from linear regression model
+
+### Solar
+oxon_solar_2014.csv : 2014 generation in kW/kWp
+
+### Heat Pump
+centralheatpump.csv : central heat pump load
+<br />
+domestic_demand.csv : domestic heat pump load per house
+<br />
+nondomestic_demand.csv : non-domestic heat pump load per user
+<br />
+passivhaus_demand.csv : future heating demand of future new builds
+
+### Loads
+EV_Demand_day_1.csv : EV load per vehicle during daytime
+<br />
+EV_demand_night_1.csv : EV load per vehicle during nighttime
+<br />
+ken_dom_annual_demand_per_household_2.csv : 2020 domestic load per house
+<br />
+ideal_domestic_demand_per_household_v1.csv : 2050 domestic load per house predicted from
+<br />
+ken_non_dom_annual_demand_per_user.csv : non_domestic load per user
+
+### Storage
+Nissan Leaf : EV Batteries 
+<br />
+Tesla Powerpack 2 : Community Battery
+<br />
+Nissan Leaf at 80% efficiency and capacity : Domestic Storage Batteries
 
 ### Outgoing Tariff
 octopus_outgoing_2018_SE.csv : 2018 data for Octopus Outgoing tariff (pence/kWh) for the South East of UK. Data obtained from <a href="https://octopus.energy/blog/outgoing/">Octopus Outgoing</a>
