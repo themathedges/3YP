@@ -81,7 +81,7 @@ non_dispatchable.append(load_site2)
 
 # School Load
 school_dataset = 'data/school_annual_demand.csv'
-nSchools = 3                                                                   # schools growht scaled with household growth 
+nSchools = 3                                                                    # schools growth scaled with household growth 
 load_site7 = AS.ndAsset(nSchools, school_dataset)
 non_dispatchable.append(load_site7)
 
@@ -94,7 +94,7 @@ non_dispatchable.append(load_site3)
 
 # EV Night Charging Load
 night_dataset = 'data/EV_Demand_night_1.csv'
-nCars_night = 3599                                                             # all cars are EVs by 2050
+nCars_night = 3599                                                              # all cars are EVs by 2050
 load_site9 = AS.evAsset(nCars_night, night_dataset)
 non_dispatchable.append(load_site9)
 
@@ -175,7 +175,7 @@ disp_load_means = AV.Averaging(disp_load)
 non_disp_load = [i[0] for i in non_disp_load.tolist()]              # average net non-dispatchable load
 non_disp_load_means = AV.Averaging(non_disp_load)
 
-pv = [i[0] for i in pv_site1.getOutput(dt).tolist()]                # average pv generation 
+pv = [i[0] for i in pv_site1.getOutput(dt).tolist()]                # average domestic pv generation 
 pv_means = AV.Averaging(pv)
 
 sf = [i[0] for i in pv_site2.getOutput(dt).tolist()]                # average solar farm generation 
@@ -190,10 +190,28 @@ dom_means = AV.Averaging(dom)
 nondom = [i[0] for i in load_site2.getOutput(dt).tolist()]          # average non-domestic demand
 nondom_means = AV.Averaging(nondom)
 
-ev = [i[0] for i in load_site3.getOutput(dt).tolist()]              # average EV electricity demand
+sch = [i[0] for i in load_site7.getOutput(dt).tolist()]             # average schools electricty demand
+sch_means = AV.Averaging(sch)
+
+evd = [i[0] for i in load_site3.getOutput(dt).tolist()]             # average EV electricity demand (day)
+evd_means = AV.Averaging(evd)
+
+evn = [i[0] for i in load_site9.getOutput(dt).tolist()]             # average EV electricity demand (night)
+evn_means = AV.Averaging(evn)
+
+ev = [i+j for i,j in zip(evd,evn)]                                  # average total EV electricity demand
 ev_means = AV.Averaging(ev)
 
-hp = [i[0] for i in load_site4.getOutput().tolist()]                # average heat pump electricity demand
+hp1 = [i[0] for i in load_site4.getOutput().tolist()]               # average central heat pump electricity demand
+hp1_means = AV.Averaging(hp1)
+
+hp2 = [i[0] for i in load_site5.getOutput().tolist()]               # average domestic heat pump electricity demand
+hp2_means = AV.Averaging(hp2)
+
+hp3 = [i[0] for i in load_site6.getOutput().tolist()]               # average non-domestic heat pump electricity demand
+hp3_means = AV.Averaging(hp3)
+
+hp = [i+j+k for i,j,k in zip(hp1,hp2,hp3)]                          # average total heat pump electricity demand
 hp_means = AV.Averaging(hp)
 
 dombat = [i[0] for i in battery_site1.getOutput(net_load).tolist()] # average domestic battery storage
@@ -208,8 +226,11 @@ v2g_means = AV.Averaging(v2g)
 gross_gen = [i+j+k for i,j,k in zip(hydro,pv,sf)]                   # average gross renewable generation
 gross_gen_means = AV.Averaging(gross_gen)
 
-gross_load = [i+j-k for i,j,k in zip(dom,nondom,hydro)]             # average gross demand without energy system
+gross_load = [i+j+k+l+m for i,j,k,l,m in zip(dom,nondom,sch,ev,hp)]  # average gross demand           
 gross_load_means = AV.Averaging(gross_load)
+
+current = [g+h+i+j-k for g,h,i,j,k in zip(sch,ev,dom,nondom,hydro)] # average net load without energy system (EV demand in 2050 included)
+current_means = AV.Averaging(current)
 
 
 #######################################
@@ -277,7 +298,7 @@ Fig5.canvas.set_window_title('20th Oct - 31st Dec')
 # calculate CO2 emissions with/without the energy system
 x0 = emission_intensity                                     # carbon emission intensities (tnCO2/kWh) 
 y0 = net_load                                               # with energy system, net load (kWh)
-z0 = gross_load                                             # without energy system, net load (kWh)  
+z0 = current                                                # without energy system, net load (kWh)  
                                  
 emissions = [a*b for a,b in zip(y0,x0)]                     # with energy system, emissions (tnCO2)
 emissions_means = AV.Averaging(emissions)                   # daily averages for each quintile
@@ -349,7 +370,7 @@ print("")
 # find annualised net load and total emissions without the energy system
 #print("Current Situation, Annual Net Emissions: %.2f tnCO2" % sum(previous_emissions))
 #print("")
-print("Current Situation, Annual Net Load: %.2f MWh" % (sum(gross_load)/1000))
+print("Current Situation, Annual Net Load: %.2f MWh" % (sum(current)/1000))
 print("")
 #print("Annual Net Emissions Saving With New Energy System: %.2f tnCO2" % (sum(previous_emissions)-sum(emissions)))
 #print("")
