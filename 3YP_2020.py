@@ -54,7 +54,7 @@ non_dispatchable.append(pv_site1)
 
 # Solar PV Farm
 sf_pvCapacity = 0.45                                                            # 450 W PV panels
-nPanels = 45000                                                                 # 45,000 panel solar farm
+nPanels = 40000                                                                 # 35,000 panel solar farm
 pv_site2 = AS.sfAsset(sf_pvCapacity, nPanels, annual_degradation)          
 non_dispatchable.append(pv_site2)
 
@@ -80,19 +80,19 @@ load_site2 = AS.ndAsset(nBusinesses, nondomestic_dataset)
 non_dispatchable.append(load_site2)
 
 # School Load
-school_dataset = #?
-nSchools = #?                                                                   # schools in Kennington
-load_site7 = AS.ndAsset(nSchools, school_dataset)
-non_dispatchable.append(load_site7)
+#school_dataset = #?
+#nSchools = #?                                                                   # schools in Kennington
+#load_site7 = AS.ndAsset(nSchools, school_dataset)
+#non_dispatchable.append(load_site7)
 
 # EV Day Charging Load
-day_dataset = 'data/EV_Demand_day_1'
+day_dataset = 'data/EV_Demand_day_1.csv'
 nCars = 1                                                                       # EVs in Kennington
 load_site3 = AS.evAsset(nCars, day_dataset)            
 non_dispatchable.append(load_site3)
 
 # EV Night Charging Load
-night_dataset = 'data/EV_Demand_night_1'
+night_dataset = 'data/EV_Demand_night_1.csv'
 load_site9 = AS.evAsset(nCars, night_dataset)
 non_dispatchable.append(load_site9)
 
@@ -114,7 +114,7 @@ non_dispatchable.append(load_site6)
 # Battery Storage
 # Domestic Batteries - 2nd life EVs
 nUsers1 = 0.028*1985                                                           # domestic storage = domestic PV installations
-capacity1 = 40*0.8
+capacity1 = 40*(1-0.2723)
 power1 = 50                                                               
 eff1 = 0.8
 battery_site1 = AS.PracticalBatteryAsset1(dt, T, capacity1, power1, eff1, nUsers1) 
@@ -122,7 +122,7 @@ dispatchable.append(battery_site1)
 
 # Community Battery - Tesla Powerpack
 nPacks = 1 
-capacity2 = 4200
+capacity2 = 4200 #6300
 power2 = 500
 eff2 = 1
 battery_site2 = AS.PracticalBatteryAsset2(dt, T, capacity2, power2, eff2, nPacks) 
