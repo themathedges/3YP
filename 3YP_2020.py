@@ -68,32 +68,33 @@ non_dispatchable.append(hydro_site1)
 
 # Loads
 # Domestic Load
-domestic_dataset = 'data/ken_dom_annual_demand_per_household_2.csv'
+domestic_dataset = 'data/ken_dom_annual_demand_per_household_3.csv'
 nHouseholds = 1985                                                              # households in Kennington
 load_site1 = AS.loadAsset(nHouseholds, domestic_dataset)   
 non_dispatchable.append(load_site1)
 
 # Non-Domestic Load
-nondomestic_dataset = 'data/ken_non_dom_annual_demand_per_user.csv'
-nBusinesses = 36                                                                # businesses in Kennington
+nondomestic_dataset = 'data/ken_non_dom_annual_demand_per_user_3.csv'
+nBusinesses = 32                                                                # businesses in Kennington <- there is 36 in total including schools but we removed the 4 educational organisations
 load_site2 = AS.ndAsset(nBusinesses, nondomestic_dataset)    
 non_dispatchable.append(load_site2)
 
 # School Load
-#school_dataset = #?
-#nSchools = #?                                                                   # schools in Kennington
-#load_site7 = AS.ndAsset(nSchools, school_dataset)
-#non_dispatchable.append(load_site7)
+school_dataset = 'data/school_annual_demand.csv'
+nSchools = 2                                                                   # schools in Kennington <- there are 2 full size primary schools in ken and 2 small nurseries but we assume the demand of the nurseries has been covered in this school profile 
+load_site7 = AS.ndAsset(nSchools, school_dataset)
+non_dispatchable.append(load_site7)
 
 # EV Day Charging Load
 day_dataset = 'data/EV_Demand_day_1.csv'
-nCars = 1                                                                       # EVs in Kennington
-load_site3 = AS.evAsset(nCars, day_dataset)            
+nCars_day = 1                                                                       # EVs in Kennington
+load_site3 = AS.evAsset(nCars_day, day_dataset)            
 non_dispatchable.append(load_site3)
 
 # EV Night Charging Load
 night_dataset = 'data/EV_Demand_night_1.csv'
-load_site9 = AS.evAsset(nCars, night_dataset)
+nCars_night = 1
+load_site9 = AS.evAsset(nCars_night, night_dataset)
 non_dispatchable.append(load_site9)
 
 # Central Heat Pump Electricity Load  

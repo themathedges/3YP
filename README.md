@@ -36,11 +36,11 @@ Number of households = 1985 (2020), 2574 (2050)
 
 
 ### Non-Domestic Electricity Demand - ndAsset
-Number of businesses = 36 (2020), 46 (2050)
+Number of businesses = 32 (2020), 41 (2050)
 
 
 ### Schools Electricity Demand - ndAsset
-Number of schooks = ???
+Number of schooks = 2 (2020), 3 (2050)
 
 
 ### Electric Vehicle Electricity Demand - evAsset
@@ -139,11 +139,13 @@ EV_Demand_day_1.csv : EV load per vehicle during daytime
 <br />
 EV_demand_night_1.csv : EV load per vehicle during nighttime
 <br />
-ken_dom_annual_demand_per_household_2.csv : 2020 domestic load per house
+ken_dom_annual_demand_per_household_3.csv : 2020 domestic load per house
 <br />
 ideal_domestic_demand_per_household_v1.csv : 2050 domestic load per house predicted from
 <br />
-ken_non_dom_annual_demand_per_user.csv : non_domestic load per user
+ken_non_dom_annual_demand_per_user_3.csv : non_domestic load per user
+<br />
+school_demand_profile.csv : load per school
 
 ### Storage
 Nissan Leaf : EV Batteries 
