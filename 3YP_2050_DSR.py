@@ -32,7 +32,7 @@ net_load_array  = []        # Net load array to store MWh
 net_load_proportion = []    # Net load proportion array
 emissions_array = []        # Emissions array
 
-p_array = np.linspace(0.01, 0.5, 50)
+p_array = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7]
 
 for prop in p_array:
     #######################################
@@ -78,8 +78,8 @@ for prop in p_array:
     # Loads
 
     # Define proportions
-    p_dom_top = 0        # Proportion of top responders
-    p_dom_bottom = prop        # Proportion of bottom responders
+    p_dom_top = prop        # Proportion of top responders
+    p_dom_bottom = 0        # Proportion of bottom responders
 
     # Domestic Load - Top
     domestic_dataset_top = 'data/ideal_domestic_demand_per_household_v1.csv'
@@ -440,6 +440,12 @@ for prop in p_array:
 plt.plot(p_array, net_load_array)
 plt.show()
 
-
 plt.plot(p_array, net_load_proportion)
 plt.show()
+
+# Write the data to a DataFrame
+df = pd.DataFrame()
+df['proportion'] = p_array
+df['Net_export_saved'] = net_load_array
+df.to_csv('prop_top.csv')       # for top responder data
+#df.to_csv('prop_bottom.csv')    # for bottom responder data
