@@ -29,6 +29,8 @@ import Emissions as EM
 #######################################
 
 
+
+
 #######################################
 ### STEP 1: setup parameters
 #######################################
@@ -72,11 +74,28 @@ non_dispatchable.append(hydro_site1)
 
 
 # Loads
-# Domestic Load
-domestic_dataset = 'data/ideal_domestic_demand_per_household_v1.csv'
-nHouseholds = 2574                                                              # predicted households in Kennington
-load_site1 = AS.loadAsset(nHouseholds, domestic_dataset)   
-non_dispatchable.append(load_site1)
+
+# Define proportions
+p_dom_top = prop
+p_dom_bottom = 0
+
+# Domestic Load - Top
+domestic_dataset_top = 'data/ideal_domestic_demand_per_household_3.csv'
+nHouseholds_top = int(2574 * p_dom_top)                                                              # predicted households in Kennington
+load_site1_dom_top = AS.loadAsset(nHouseholds_top, domestic_dataset_top)   
+non_dispatchable.append(load_site1_dom_top)
+
+# Domestic Load - Bottom
+domestic_dataset_bottom = 'data/ideal_domestic_demand_per_household_3.csv'
+nHouseholds_bottom = int(2574 * p_dom_bottom)                                                              # predicted households in Kennington
+load_site1_dom_bottom = AS.loadAsset(nHouseholds_bottom, domestic_dataset_bottom)   
+non_dispatchable.append(load_site1_dom_bottom)
+
+# Domestic Load - Normal
+domestic_dataset_normal = 'data/ideal_domestic_demand_per_household_3.csv'
+nHouseholds_normal = 2574 - nHouseholds_top - nHouseholds_bottom                                                             # predicted households in Kennington
+load_site1_normal = AS.loadAsset(nHouseholds_normal, domestic_dataset_normal)   
+non_dispatchable.append(load_site1_normal)
 
 # Non-Domestic Load
 nondomestic_dataset = 'data/ken_non_dom_annual_demand_per_user_3.csv'
@@ -246,10 +265,9 @@ current_means = AV.Averaging(current)
 ### STEP 5: plot generation results
 #######################################
 
-
+'''
 # overall plotting style
 plt.style.use('seaborn')
-
 
 # 1st 5th of the year     # this is plotting average profiles found over the dates 1st Jan-14th March; the "Average.py" function finds these average profiles over this period
 fig1 = PT.genPlotting(hydro_means[0], pv_means[0], sf_means[0], net_load_means[0], gross_gen_means[0], disp_load_means[0])
@@ -296,7 +314,7 @@ Fig4.canvas.set_window_title('8th Aug - 19th Oct')
 # 5th 5th of the year
 Fig5 = PT.loadPlotting(net_load_means[4], gross_load_means[4], dom_means[4], nondom_means[4], ev_means[4], hp_means[4])
 Fig5.canvas.set_window_title('20th Oct - 31st Dec') 
-
+'''
 
 
 ##########################################
@@ -315,7 +333,7 @@ emissions_means = AV.Averaging(emissions)                   # daily averages for
 previous_emissions = [a*b for a,b in zip(z0,x0)]            # without energy system, emissions (tnCO2)
 previous_emissions_means = AV.Averaging(previous_emissions) # daily averages for each quintile
 
-
+'''
 # plot emmissions intensity over 2020
 figA,axA = plt.subplots()
 figA.tight_layout(pad=3.0)
@@ -364,7 +382,7 @@ figC.canvas.set_window_title('1st Jan - 31st Dec')
 # plot average daily emissions for each quintile in 2020
 figD = PT.emPlotting(emissions_means[0], emissions_means[1], emissions_means[2], emissions_means[3],  emissions_means[4])
 figD.canvas.set_window_title('Average Daily Emissions In Each Quintile')
-
+'''
 
 # find annualised net load and total emissions with the energy system
 print("")
