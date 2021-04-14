@@ -32,7 +32,7 @@ net_load_array  = []        # Net load array to store MWh
 net_load_proportion = []    # Net load proportion array
 emissions_array = []        # Emissions array
 
-p_array = np.linspace(0.01, 0.05, 5)
+p_array = np.linspace(0.01, 0.5, 50)
 
 for prop in p_array:
     #######################################
@@ -78,8 +78,8 @@ for prop in p_array:
     # Loads
 
     # Define proportions
-    p_dom_top = prop        # Proportion of top responders
-    p_dom_bottom = 0        # Proportion of bottom responders
+    p_dom_top = 0        # Proportion of top responders
+    p_dom_bottom = prop        # Proportion of bottom responders
 
     # Domestic Load - Top
     domestic_dataset_top = 'data/ideal_domestic_demand_per_household_v1.csv'
@@ -427,15 +427,19 @@ for prop in p_array:
     purchased_daily = ES.E_to_dailyE(purchased, dt) / 100 
     sold_daily = ES.E_to_dailyE(sold, dt) / 100
 
-    export_proportion = [1 for i in net_load if i<0]
-
+    export_proportion = sum([1 for i in net_load if i<0])/len(net_load)
+    print(export_proportion)
     ############################################################
     ### FINAL STEP append the data to the arrays
     #############################################################
-    net_load_array.append(net_load[-1])              # Net load array to store MWh
+    net_load_array.append(sum(net_load)/1000)              # Net load array to store MWh
     net_load_proportion.append(export_proportion)    # Net load proportion array
     #emissions_array.append(emissions)               # Emissions array
     
 ## Now we plot the results
 plt.plot(p_array, net_load_array)
+plt.show()
+
+
+plt.plot(p_array, net_load_proportion)
 plt.show()
