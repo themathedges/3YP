@@ -239,7 +239,7 @@ current_means = AV.Averaging(current)
 
 
 # overall plotting style
-plt.style.use('seaborn')
+plt.style.use('grayscale')
 
 
 # 1st 5th of the year     # this is plotting average profiles found over the dates 1st Jan-14th March; the "Average.py" function finds these average profiles over this period
