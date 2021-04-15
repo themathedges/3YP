@@ -123,8 +123,8 @@ dispatchable.append(battery_site1)
 
 # Community Battery - Tesla Powerpack
 nPacks = 1 
-capacity2 = 4200 #6300
-power2 = 500
+capacity2 = 5000
+power2 = 1000
 eff2 = 1
 battery_site2 = AS.PracticalBatteryAsset2(dt, T, capacity2, power2, eff2, nPacks) 
 dispatchable.append(battery_site2)
@@ -226,7 +226,7 @@ v2g_means = AV.Averaging(v2g)
 gross_gen = [i+j+k for i,j,k in zip(hydro,pv,sf)]                   # average gross renewable generation 
 gross_gen_means = AV.Averaging(gross_gen)
 
-gross_load = [i+j+k+l+m for i,j,k,l,m in zip(dom,nondom,sch,ev,hp)]  # average gross demand            # average gross demand without energy system
+gross_load = [i+j+k+l+m for i,j,k,l,m in zip(dom,nondom,sch,ev,hp)] # average gross demand          
 gross_load_means = AV.Averaging(gross_load)
 
 current = [h+i+j-k for h,i,j,k in zip(sch,dom,nondom,hydro)]        # average net load without energy system (no EV demand included)
@@ -239,7 +239,7 @@ current_means = AV.Averaging(current)
 
 
 # overall plotting style
-plt.style.use('grayscale')
+plt.style.use('seaborn')
 
 
 # 1st 5th of the year     # this is plotting average profiles found over the dates 1st Jan-14th March; the "Average.py" function finds these average profiles over this period
@@ -310,14 +310,13 @@ previous_emissions_means = AV.Averaging(previous_emissions) # daily averages for
 figA,axA = plt.subplots()
 figA.tight_layout(pad=3.0)
 x_axis = pd.date_range('2020' + '-01-01', periods = 17520, freq= '0.5H') 
-myFmt = mdates.DateFormatter('%H:%M')                       # format the times into Hour:Minute format
+myFmt = mdates.DateFormatter('%B')                          # format the times into month format
 plt.gcf().autofmt_xdate()                                   # automatic rotation of the axis plots
 
-axA.plot(x_axis, emission_intensity)
+axA.plot(x_axis, emission_intensity, 'k')
 axA.set_ylabel('tnCO2/kWh')
-axA.set_xlabel('Time')
 axA.set_title('Emissions Intensity, 2020')
-axA.xaxis.set_major_formatter(myFmt)                        # apply HH:MM format to the x axis data
+axA.xaxis.set_major_formatter(myFmt)                        # apply B format to the x axis data
 figA.canvas.set_window_title('1st Jan - 31st Dec')
 
 
@@ -325,14 +324,13 @@ figA.canvas.set_window_title('1st Jan - 31st Dec')
 figB,axB = plt.subplots()
 figB.tight_layout(pad=3.0)
 x_axis = pd.date_range('2020' + '-01-01', periods = 17520, freq= '0.5H') 
-myFmt = mdates.DateFormatter('%H:%M')                       # format the times into Hour:Minute format
+myFmt = mdates.DateFormatter('%B')                          # format the times into month format
 plt.gcf().autofmt_xdate()                                   # automatic rotation of the axis plots
 
-axB.plot(x_axis, net_load)
+axB.plot(x_axis, net_load, 'k')
 axB.set_ylabel('kWh')
-axB.set_xlabel('Time')
 axB.set_title('Net Load, 2020')
-axB.xaxis.set_major_formatter(myFmt)                        # apply HH:MM format to the x axis data
+axB.xaxis.set_major_formatter(myFmt)                        # apply B format to the x axis data
 figB.canvas.set_window_title('1st Jan - 31st Dec')
 
 
@@ -340,43 +338,75 @@ figB.canvas.set_window_title('1st Jan - 31st Dec')
 figC,axC = plt.subplots()
 figC.tight_layout(pad=3.0)
 x_axis = pd.date_range('2020' + '-01-01', periods = 17520, freq= '0.5H') 
-myFmt = mdates.DateFormatter('%H:%M')                       # format the times into Hour:Minute format
+myFmt = mdates.DateFormatter('%B')                          # format the times into month format
 plt.gcf().autofmt_xdate()                                   # automatic rotation of the axis plots
+plt.tick_params(labelsize=16)
 
-axC.plot(x_axis, emissions)
-axC.set_ylabel('tnCO2')
-axC.set_xlabel('Time')
-axC.set_title('Net CO2 Emissions, 2020')
-axC.xaxis.set_major_formatter(myFmt)                        # apply HH:MM format to the x axis data
+axC.plot(x_axis, emissions, 'k')
+axC.set_ylabel('Net Emissions (tnCO2)', size=16)
+axC.set_ylim([-3,2])
+axC.set_title('Net Emissions, 2020')
+axC.xaxis.set_major_formatter(myFmt)                        # apply B format to the x axis data
 figC.canvas.set_window_title('1st Jan - 31st Dec')
 
 
 # plot average daily emissions for each quintile in 2020
-figD = PT.emPlotting(emissions_means[0], emissions_means[1], emissions_means[2], emissions_means[3],  emissions_means[4])
-figD.canvas.set_window_title('Average Daily Emissions In Each Quintile')
+figD = PT.emPlotting(emissions_means[0], emissions_means[1], emissions_means[2], emissions_means[3],  emissions_means[4], emissions)
+figD.canvas.set_window_title('Net Emissions, 2020: daily averages and totals')
+
+plt.show()
 
 
 # find annualised net load and total emissions with the energy system
 print("")
 print("2020 Load & Emissions Figures")
 print("")
-#print("New Energy System, Annual Net Emissions: %.2f tnCO2" % (sum(emissions)))
-#print("")
+print("New Energy System, Annual Net Emissions: %.2f tnCO2" % (sum(emissions)))
+print("")
 print("New Energy System, Annual Net Load: %.2f MWh" % (sum(net_load)/1000))
 print("")
 
 
 # find annualised net load and total emissions without the energy system
-#print("Current Situation, Annual Net Emissions: %.2f tnCO2" % sum(previous_emissions))
-#print("")
+print("Current Situation, Annual Net Emissions: %.2f tnCO2" % sum(previous_emissions))
+print("")
 print("Current Situation, Annual Net Load: %.2f MWh" % (sum(current)/1000))
 print("")
-#print("Annual Net Emissions Saving With New Energy System: %.2f tnCO2" % (sum(previous_emissions)-sum(emissions)))
-#print("")
+print("Annual Net Emissions Saving With New Energy System: %.2f tnCO2" % (sum(previous_emissions)-sum(emissions)))
+print("")
+
+
+################################################################
+### STEP 8: calculate how often power is imported from the grid
+################################################################
+
+
+occurance1 = []
+for load in net_load:
+    if load > 0:
+        occurance1.append(1)
+    elif load < 0:
+        continue
+    else:
+        continue
+proportion1 = 100 * len(occurance1)/(356*48)
+print('New Energy System: Proportion of time in which Kennington draws from the grid in 2050 =', proportion1, '%')
+print("")
+
+occurance2 = []
+for load in current:
+    if load > 0:
+        occurance2.append(1)
+    elif load < 0:
+        continue
+    else:
+        continue
+proportion2 = 100 * len(occurance2)/(356*48)
+print('Current Situation: Proportion of time in which Kennington draws from the grid in 2050 =', proportion2, '%')
 
 
 #######################################
-### STEP 8: setup and run the market
+### STEP 9: setup and run the market
 #######################################
 
 
@@ -393,6 +423,3 @@ purchased, sold = market1.gridBreakdown()
 # convert to pounds
 purchased_daily = ES.E_to_dailyE(purchased, dt) / 100 
 sold_daily = ES.E_to_dailyE(sold, dt) / 100           
-
-
-#plt.show()
