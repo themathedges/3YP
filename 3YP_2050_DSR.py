@@ -435,7 +435,7 @@ for prop in p_array:
     #############################################################
     net_load_array.append(sum(net_load)/1000)              # Net load array to store MWh
     net_load_proportion.append(export_proportion)    # Net load proportion array
-    emissions_array.append(sum(emissions)))               # Emissions array tnCo2
+    emissions_array.append(sum(emissions))               # Emissions array tnCo2
     
 ## Now we plot the results
 plt.plot(p_array, net_load_array)
