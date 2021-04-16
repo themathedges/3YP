@@ -31,8 +31,9 @@ import Emissions as EM
 net_load_array  = []        # Net load array to store MWh
 net_load_proportion = []    # Net load proportion array
 emissions_array = []        # Emissions array
+#emissions_saved_array = []  # Emissions saved array
 
-p_array = [i/100 for i in range(1,101)]
+p_array = [i/100 for i in range(1,101,5)]
 
 for prop in p_array:
     #######################################
@@ -396,8 +397,8 @@ for prop in p_array:
     print("")
     print("2050 Load & Emissions Figures")
     print("")
-    #print("New Energy System, Annual Net Emissions: %.2f tnCO2" % (sum(emissions)))
-    #print("")
+    print("New Energy System, Annual Net Emissions: %.2f tnCO2" % (sum(emissions)))
+    print("")
     print("New Energy System, Annual Net Load: %.2f MWh" % (sum(net_load)/1000))
     print("")
 
@@ -434,7 +435,7 @@ for prop in p_array:
     #############################################################
     net_load_array.append(sum(net_load)/1000)              # Net load array to store MWh
     net_load_proportion.append(export_proportion)    # Net load proportion array
-    #emissions_array.append(emissions)               # Emissions array
+    emissions_array.append(sum(emissions)))               # Emissions array tnCo2
     
 ## Now we plot the results
 plt.plot(p_array, net_load_array)
@@ -447,5 +448,6 @@ plt.show()
 df = pd.DataFrame()
 df['proportion'] = p_array
 df['Net_export_saved'] = net_load_array
-#df.to_csv('prop_top.csv')       # for top responder data
+df['Emissions_tnco2'] = emissions_array
+df.to_csv('prop_top.csv')       # for top responder data
 #df.to_csv('prop_bottom.csv')    # for bottom responder data
