@@ -32,7 +32,7 @@ net_load_array  = []        # Net load array to store MWh
 net_load_proportion = []    # Net load proportion array
 emissions_array = []        # Emissions array
 
-p_array = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7]
+p_array = [i/100 for i in range(1,101)]
 
 for prop in p_array:
     #######################################
@@ -82,13 +82,13 @@ for prop in p_array:
     p_dom_bottom = 0        # Proportion of bottom responders
 
     # Domestic Load - Top
-    domestic_dataset_top = 'data/ideal_domestic_demand_per_household_v1.csv'
+    domestic_dataset_top = 'data/ideal_domestic_demand_top_v2.csv'
     nHouseholds_top = int(nHouseholds * p_dom_top)                                                              # predicted households in Kennington
     load_site1_dom_top = AS.loadAsset(nHouseholds_top, domestic_dataset_top)   
     non_dispatchable.append(load_site1_dom_top)
 
     # Domestic Load - Bottom
-    domestic_dataset_bottom = 'data/ken_dom_annual_demand_per_household_3.csv'
+    domestic_dataset_bottom = 'data/ideal_domestic_demand_bottom_v2.csv'
     nHouseholds_bottom = int(nHouseholds * p_dom_bottom)                                                              # predicted households in Kennington
     load_site1_dom_bottom = AS.loadAsset(nHouseholds_bottom, domestic_dataset_bottom)   
     non_dispatchable.append(load_site1_dom_bottom)
@@ -447,5 +447,5 @@ plt.show()
 df = pd.DataFrame()
 df['proportion'] = p_array
 df['Net_export_saved'] = net_load_array
-df.to_csv('prop_top.csv')       # for top responder data
+#df.to_csv('prop_top.csv')       # for top responder data
 #df.to_csv('prop_bottom.csv')    # for bottom responder data
