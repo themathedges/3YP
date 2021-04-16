@@ -72,6 +72,63 @@ def loadPlotting(net_load_mean, non_disp_load_mean, dom_mean, nondom_mean, ev_me
     return fig
 
 
+def netloadPlotting(mean1, mean2, mean3, mean4, mean5, year):
+
+    fig,ax =  plt.subplots(nrows=3,ncols=2,sharex=False,sharey=False)
+    plt.xticks(rotation=90)
+    fig.tight_layout(pad=3.0)
+    
+    x_axis = pd.date_range('2020' + '-01-01', periods = 48, freq= '0.5H') 
+    myFmt = mdates.DateFormatter('%H:%M')       # format the times into Hour:Minute format                  
+
+    x_axis2 = pd.date_range('2020' + '-01-01', periods = 17520, freq= '0.5H') 
+    myFmt2 = mdates.DateFormatter('%B')         # format the times into Month format
+
+    ax[0][0].plot(x_axis, mean1, 'k')
+    ax[0][0].set_ylabel('Net Load (kWh)')
+    ax[0][0].set_xlabel('Time')
+    #ax[0][0].set_title('1st Quintile Daily Average')
+    ax[0][0].xaxis.set_major_formatter(myFmt)   # apply HH:MM format to the x axis data
+    ax[0][0].grid(b=True)
+
+    ax[0][1].plot(x_axis, mean4, 'k')
+    ax[0][1].set_ylabel('Net Load (kWh)')
+    ax[0][1].set_xlabel('Time')
+    #ax[0][1].set_title('4th Quintile Daily Average') # dom + nondom - hydro
+    ax[0][1].xaxis.set_major_formatter(myFmt)   # apply HH:MM format to the x axis data
+    ax[0][1].grid(b=True)
+
+    ax[1][0].plot(x_axis, mean2, 'k')
+    ax[1][0].set_ylabel('Net Load (kWh)')
+    ax[1][0].set_xlabel('Time')
+    #ax[1][0].set_title('2nd Quintile Daily Average')
+    ax[1][0].xaxis.set_major_formatter(myFmt)   # apply HH:MM format to the x axis data
+    ax[1][0].grid(b=True)
+
+    ax[1][1].plot(x_axis, mean5, 'k')
+    ax[1][1].set_ylabel('Net Load (kWh)')
+    ax[1][1].set_xlabel('Time')
+    #ax[1][1].set_title('5th Quintile Daily Average')
+    ax[1][1].xaxis.set_major_formatter(myFmt)   # apply HH:MM format to the x axis data
+    ax[1][1].grid(b=True)
+    
+    ax[2][0].plot(x_axis, mean3, 'k')
+    ax[2][0].set_ylabel('Net Load (kWh)')
+    ax[2][0].set_xlabel('Time')
+    #ax[2][0].set_title('3rd Quintile Daily Average')
+    ax[2][0].xaxis.set_major_formatter(myFmt)   # apply HH:MM format to the x axis data
+
+    ax[2][1].plot(x_axis2, year, 'k')
+    ax[2][1].set_ylabel('Net Load (kWh)')
+    #ax[2][1].set_xlabel('Time')
+    #ax[2][1].set_title('Annual Variation')
+    ax[2][1].xaxis.set_major_formatter(myFmt2)  # apply B format to the x axis data
+    ax[2][1].grid(b=True)
+    ax[2][1].tick_params(labelrotation=45)
+
+    return fig
+
+
 def genPlotting(hydro_mean, pv_mean, sf_mean, net_load_mean, gross_gen_mean, disp_load_mean):
 
     fig,ax =  plt.subplots(nrows=3,ncols=2,sharex=True,sharey=False)
@@ -123,6 +180,64 @@ def genPlotting(hydro_mean, pv_mean, sf_mean, net_load_mean, gross_gen_mean, dis
     ax[2][1].set_title('Solar Farm Generation')
     ax[2][1].xaxis.set_major_formatter(myFmt)   # apply HH:MM format to the x axis data
     ax[2][1].grid(b=True)
+    
+    return fig
+
+
+def batPlotting(bat1, bat2, bat3, bat4, bat5, year):
+
+    fig,ax =  plt.subplots(nrows=3,ncols=2,sharex=False,sharey=False)
+    plt.xticks(rotation=90)
+    fig.tight_layout(pad=3.0)
+    
+    x_axis = pd.date_range('2020' + '-01-01', periods = 48, freq= '0.5H') 
+    myFmt = mdates.DateFormatter('%H:%M')       # format the times into Hour:Minute format
+
+    x_axis2 = pd.date_range('2020' + '-01-01', periods = 17520, freq= '0.5H') 
+    myFmt2 = mdates.DateFormatter('%B')         # format the times into Month format
+
+    ax[2][0].plot(x_axis, bat3, 'k')
+    ax[2][0].set_ylabel('kWh')
+    ax[2][0].set_xlabel('Time of day')
+    ax[2][0].set_title('3rd Quintile')
+    ax[2][0].xaxis.set_major_formatter(myFmt)   # apply HH:MM format to the x axis data
+    ax[2][0].grid(b=True)
+
+    ax[1][0].plot(x_axis, bat2, 'k')
+    ax[1][0].set_ylabel('kWh')
+    ax[1][0].set_xlabel('Time of day')
+    ax[1][0].set_title('2nd Quintile')
+    ax[1][0].xaxis.set_major_formatter(myFmt)   # apply HH:MM format to the x axis data
+    ax[1][0].grid(b=True)
+
+    ax[0][0].plot(x_axis, bat1, 'k')
+    ax[0][0].set_ylabel('kWh')
+    ax[0][0].set_xlabel('Time of day')
+    ax[0][0].set_title('1st Quintile')
+    ax[0][0].xaxis.set_major_formatter(myFmt)   # apply HH:MM format to the x axis data
+    ax[0][0].grid(b=True)
+
+    ax[0][1].plot(x_axis, bat4, 'k')
+    ax[0][1].set_ylabel('kWh')
+    ax[0][1].set_xlabel('Time of day')
+    ax[0][1].set_title('4th Quintile')
+    ax[0][1].xaxis.set_major_formatter(myFmt)   # apply HH:MM format to the x axis data
+    ax[0][1].grid(b=True)
+
+    ax[1][1].plot(x_axis, bat5, 'k')
+    ax[1][1].set_ylabel('kWh')
+    ax[1][1].set_xlabel('Time of day')
+    ax[1][1].set_title('5th Quintile')
+    ax[1][1].xaxis.set_major_formatter(myFmt)   # apply HH:MM format to the x axis data
+    ax[1][1].grid(b=True)
+    
+    ax[2][1].plot(x_axis2,'k')
+    ax[2][1].set_ylabel('kWh')
+    #ax[2][1].set_xlabel('Time')
+    ax[2][1].set_title('Overall Annual Operation')
+    ax[2][1].xaxis.set_major_formatter(myFmt2)   # apply B format to the x axis data
+    ax[2][1].grid(b=True)
+    ax[2][1].tick_params(labelrotation=45)
     
     return fig
 

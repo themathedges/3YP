@@ -229,7 +229,7 @@ gross_gen_means = AV.Averaging(gross_gen)
 gross_load = [i+j+k+l+m for i,j,k,l,m in zip(dom,nondom,sch,ev,hp)] # average gross demand          
 gross_load_means = AV.Averaging(gross_load)
 
-current = [h+i+j-k for h,i,j,k in zip(sch,dom,nondom,hydro)]        # average net load without energy system (no EV demand included)
+current = [g+h+i+j-k for g,h,i,j,k in zip(ev,sch,dom,nondom,hydro)] # average net load without energy system 
 current_means = AV.Averaging(current)
 
 
@@ -315,9 +315,9 @@ plt.gcf().autofmt_xdate()                                   # automatic rotation
 
 axA.plot(x_axis, emission_intensity, 'k')
 axA.set_ylabel('tnCO2/kWh')
-axA.set_title('Emissions Intensity, 2020')
+axA.set_title('Emissions Intensity')
 axA.xaxis.set_major_formatter(myFmt)                        # apply B format to the x axis data
-figA.canvas.set_window_title('1st Jan - 31st Dec')
+figA.canvas.set_window_title('1st Jan - 31st Dec, 2020')
 
 
 # plot net load over 2020
@@ -328,10 +328,24 @@ myFmt = mdates.DateFormatter('%B')                          # format the times i
 plt.gcf().autofmt_xdate()                                   # automatic rotation of the axis plots
 
 axB.plot(x_axis, net_load, 'k')
-axB.set_ylabel('kWh')
-axB.set_title('Net Load, 2020')
+axB.set_ylabel('Net Load (kWh)')
+axB.set_title('New Energy System Net Load')
 axB.xaxis.set_major_formatter(myFmt)                        # apply B format to the x axis data
-figB.canvas.set_window_title('1st Jan - 31st Dec')
+figB.canvas.set_window_title('1st Jan - 31st Dec, 2020')
+
+
+# plot net load over 2020 without the augmented energy system
+figE,axE = plt.subplots()
+figE.tight_layout(pad=3.0)
+x_axis = pd.date_range('2020' + '-01-01', periods = 17520, freq= '0.5H') 
+myFmt = mdates.DateFormatter('%B')                          # format the times into month format
+plt.gcf().autofmt_xdate()                                   # automatic rotation of the axis plots
+
+axE.plot(x_axis, current, 'k')
+axE.set_ylabel('Net Load (kWh)')
+#axE.set_title('Current Situation Net Load')
+axE.xaxis.set_major_formatter(myFmt)                        # apply B format to the x axis data
+figE.canvas.set_window_title('1st Jan - 31st Dec, 2020')
 
 
 # plot CO2 emissions over 2020 
@@ -345,14 +359,41 @@ plt.tick_params(labelsize=16)
 axC.plot(x_axis, emissions, 'k')
 axC.set_ylabel('Net Emissions (tnCO2)', size=16)
 axC.set_ylim([-3,2])
-axC.set_title('Net Emissions, 2020')
+axC.set_title('New Energy System Net Emissions')
 axC.xaxis.set_major_formatter(myFmt)                        # apply B format to the x axis data
-figC.canvas.set_window_title('1st Jan - 31st Dec')
+figC.canvas.set_window_title('1st Jan - 31st Dec, 2020')
+
+
+# plot CO2 emissions over 2020 without the augmented energy system
+figF,axF = plt.subplots()
+figF.tight_layout(pad=3.0)
+x_axis = pd.date_range('2020' + '-01-01', periods = 17520, freq= '0.5H') 
+myFmt = mdates.DateFormatter('%B')                          # format the times into month format
+plt.gcf().autofmt_xdate()                                   # automatic rotation of the axis plots
+plt.tick_params(labelsize=16)
+
+axF.plot(x_axis, previous_emissions, 'k')
+axF.set_ylabel('Net Emissions (tnCO2)', size=16)
+axF.set_ylim([-3,2])
+#axF.set_title('Current Situation Net Emissions')
+axF.xaxis.set_major_formatter(myFmt)                        # apply B format to the x axis data
+figF.canvas.set_window_title('1st Jan - 31st Dec, 2020')
 
 
 # plot average daily emissions for each quintile in 2020
 figD = PT.emPlotting(emissions_means[0], emissions_means[1], emissions_means[2], emissions_means[3],  emissions_means[4], emissions)
 figD.canvas.set_window_title('Net Emissions, 2020: daily averages and totals')
+
+
+# plot average daily net load (with energy system) for each quintile in 2020
+figG = PT.netloadPlotting(net_load_means[0], net_load_means[1], net_load_means[2], net_load_means[3], net_load_means[4], net_load)
+figG.canvas.set_window_title('New Energy System Net Load, 2020: daily averages and totals')
+
+
+# plot average daily net load (without energy system) for each quintile in 2020
+figH = PT.netloadPlotting(current_means[0], current_means[1], current_means[2], current_means[3], current_means[4], current)
+figH.canvas.set_window_title('Current Situation Net Load, 2020: daily averages and totals')
+
 
 plt.show()
 
@@ -390,7 +431,20 @@ for load in net_load:
     else:
         continue
 proportion1 = 100 * len(occurance1)/(356*48)
-print('New Energy System: Proportion of time in which Kennington draws from the grid in 2050 =', proportion1, '%')
+print('New Energy System: Proportion of time in which Kennington draws from the grid in 2050 with storage =', proportion1, '%')
+print("")
+
+occurance3 = []
+net_load_2 = [i-j for i,j in zip(gross_load,gross_gen)]
+for load in net_load_2:
+    if load > 0:
+        occurance3.append(1)
+    elif load < 0:
+        continue
+    else:
+        continue
+proportion3 = 100 * len(occurance3)/(356*48)
+print('New Energy System: Proportion of time in which Kennington draws from the grid in 2050 without storage =', proportion3, '%')
 print("")
 
 occurance2 = []
