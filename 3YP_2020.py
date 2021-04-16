@@ -85,17 +85,23 @@ nSchools = 2                                                                    
 load_site7 = AS.ndAsset(nSchools, school_dataset)
 non_dispatchable.append(load_site7)
 
-# EV Day Charging Load
-day_dataset = 'data/EV_Demand_day_1.csv'
-nCars_day = 1                                                                   # EVs in Kennington
-load_site3 = AS.evAsset(nCars_day, day_dataset)            
-non_dispatchable.append(load_site3)
+
+# 2050 EV Car Figures
+total_nCars = 67                      # total num of EVs in 2020 (ICEs won't be adding load to the system)
+percentage_night_charge = 1        # % of total cars which are charging at night in Ken
 
 # EV Night Charging Load
 night_dataset = 'data/EV_Demand_night_1.csv'
-nCars_night = 1
+nCars_night = percentage_night_charge*total_nCars
 load_site9 = AS.evAsset(nCars_night, night_dataset)
 non_dispatchable.append(load_site9)
+
+# EV Day Charging Load
+day_dataset = 'data/EV_Demand_day_1.csv'
+nCars_day = total_nCars-nCars_night                                                                     # EVs in Kennington
+load_site3 = AS.evAsset(nCars_day, day_dataset)            
+non_dispatchable.append(load_site3)
+
 
 # Central Heat Pump Electricity Load  
 central_dataset = 'data/centralheatpump.csv'  
