@@ -86,8 +86,8 @@ load_site7 = AS.ndAsset(nSchools, school_dataset)
 non_dispatchable.append(load_site7)
 
 # 2050 EV Car Figures
-total_nCars = 3614                                                              # total cars (ie EVs) by 2050
-percentage_night_charge = 0.89                                                  # % of total cars which are charging at night
+total_nCars = 3614                                                           # total cars (ie EVs) by 2050
+percentage_night_charge = 1                                                  # % of total cars which are charging at night
 
 # EV Night Charging Load
 night_dataset = 'data/EV_Demand_night_1.csv'

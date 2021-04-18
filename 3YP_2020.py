@@ -87,7 +87,7 @@ non_dispatchable.append(load_site7)
 
 
 # 2050 EV Car Figures
-total_nCars = 67                      # total num of EVs in 2020 (ICEs won't be adding load to the system)
+total_nCars = 67                   # total num of EVs in 2020 (ICEs won't be adding load to the system)
 percentage_night_charge = 1        # % of total cars which are charging at night in Ken
 
 # EV Night Charging Load
