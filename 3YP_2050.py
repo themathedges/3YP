@@ -235,8 +235,16 @@ gross_load_means = AV.Averaging(gross_load)
 current = [g+h+i+j-k for g,h,i,j,k in zip(sch,ev,dom,nondom,hydro)] # average net load without energy system (EV demand in 2050 included)
 current_means = AV.Averaging(current)
 
-current_2 = [h+i+j-k for h,i,j,k in zip(sch,dom,nondom,hydro)]    # average net load without energy system (no EV demand included)
+current_2 = [h+i+j-k for h,i,j,k in zip(sch,dom,nondom,hydro)]      # average net load without energy system (no EV demand included)
 current_2_means = AV.Averaging(current_2)
+
+grid_imports = []                                                   # when net load is positive, kWh are imported to Kennington
+for i in net_load:
+    if i > 0:
+        grid_imports.append(i)
+    else:
+        grid_imports.append(0)
+grid_imports_means = AV.Averaging(grid_imports)
 
 
 #######################################
@@ -322,9 +330,9 @@ plt.gcf().autofmt_xdate()                                   # automatic rotation
 
 axA.plot(x_axis, emission_intensity, 'k')
 axA.set_ylabel('tnCO2/kWh')
-axA.set_title('Emissions Intensity, 2050')
+axA.set_title('Emissions Intensity')
 axA.xaxis.set_major_formatter(myFmt)                        # apply B format to the x axis data
-figA.canvas.set_window_title('1st Jan - 31st Dec')
+figA.canvas.set_window_title('1st Jan - 31st Dec, 2050')
 
 
 # plot net load over 2050
@@ -335,10 +343,24 @@ myFmt = mdates.DateFormatter('%B')                          # format the times i
 plt.gcf().autofmt_xdate()                                   # automatic rotation of the axis plots
 
 axB.plot(x_axis, net_load, 'k')
-axB.set_ylabel('kWh')
-axB.set_title('Net Load, 2050')
+axB.set_ylabel('Net Load (kWh)')
+axB.set_title('New Energy System Net Load')
 axB.xaxis.set_major_formatter(myFmt)                        # apply B format to the x axis data
-figB.canvas.set_window_title('1st Jan - 31st Dec')
+figB.canvas.set_window_title('1st Jan - 31st Dec, 2050')
+
+
+# plot net load over 2050 without the augmented energy system
+figE,axE = plt.subplots()
+figE.tight_layout(pad=3.0)
+x_axis = pd.date_range('2050' + '-01-01', periods = 17520, freq= '0.5H') 
+myFmt = mdates.DateFormatter('%B')                          # format the times into month format
+plt.gcf().autofmt_xdate()                                   # automatic rotation of the axis plots
+
+axE.plot(x_axis, current, 'k')
+axE.set_ylabel('Net Load (kWh)')
+#axE.set_title('Current Situation Net Load')
+axE.xaxis.set_major_formatter(myFmt)                        # apply B format to the x axis data
+figE.canvas.set_window_title('1st Jan - 31st Dec, 2050')
 
 
 # plot CO2 emissions over 2050 
@@ -352,18 +374,48 @@ plt.tick_params(labelsize=18)
 axC.plot(x_axis, emissions, 'k')
 axC.set_ylabel('Net Emissions (tnCO2)', size=18)
 axC.set_ylim([-3,2])
-axC.set_title('Net Emissions, 2050')
+axC.set_title('New Energy System Net Emissions')
 axC.xaxis.set_major_formatter(myFmt)                        # apply B format to the x axis data
-figC.canvas.set_window_title('1st Jan - 31st Dec')
+figC.canvas.set_window_title('1st Jan - 31st Dec, 2050')
+
+
+# plot CO2 emissions over 2050 without the augmented energy system
+figF,axF = plt.subplots()
+figF.tight_layout(pad=3.0)
+x_axis = pd.date_range('2050' + '-01-01', periods = 17520, freq= '0.5H') 
+myFmt = mdates.DateFormatter('%B')                          # format the times into month format
+plt.gcf().autofmt_xdate()                                   # automatic rotation of the axis plots
+plt.tick_params(labelsize=18)
+
+axF.plot(x_axis, previous_emissions, 'k')
+axF.set_ylabel('Net Emissions (tnCO2)', size=18)
+axF.set_ylim([-3,2])
+#axF.set_title('Current Situation Net Emissions')
+axF.xaxis.set_major_formatter(myFmt)                        # apply B format to the x axis data
+figF.canvas.set_window_title('1st Jan - 31st Dec, 2050')
 
 
 # plot average daily emissions for each quintile in 2050
 figD = PT.emPlotting(emissions_means[0], emissions_means[1], emissions_means[2], emissions_means[3],  emissions_means[4], emissions)
 figD.canvas.set_window_title('Net Emissions, 2050: daily averages and totals')
 
-#plt.show()
+
+# plot average daily net load for each quintile in 2050
+figG = PT.netloadPlotting(net_load_means[0], net_load_means[1], net_load_means[2], net_load_means[3], net_load_means[4], net_load)
+figG.canvas.set_window_title('Net Load, 2050: daily averages and totals')
 
 
+# plot average daily grid imports for each quintile in 2050
+figH = PT.netloadPlotting(grid_imports_means[0], grid_imports_means[1], grid_imports_means[2], grid_imports_means[3], grid_imports_means[4], grid_imports)
+figH.canvas.set_window_title('Grid Imports, 2050: daily averages and totals')
+
+"""
+# plot average daily battery operation for each quintile in 2050
+year = []*17520
+figI = PT.batPlotting(disp_load_means[0], disp_load_means[1], disp_load_means[2], disp_load_means[3], disp_load_means[4], year)
+figI.canvas.set_window_title('Battery Operation, 2050: daily averages and totals')
+
+"""
 # find annualised net load and total emissions with the energy system
 print("")
 print("2050 Load & Emissions Figures")
@@ -399,7 +451,20 @@ for load in net_load:
     else:
         continue
 proportion1 = 100 * len(occurance1)/(356*48)
-print('New Energy System: Proportion of time in which Kennington draws from the grid in 2050 =', proportion1, '%')
+print('New Energy System: Proportion of time in which Kennington draws from the grid in 2050 with storage =', proportion1, '%')
+print("")
+
+occurance3 = []
+net_load_2 = [i-j for i,j in zip(gross_load,gross_gen)]
+for load in net_load_2:
+    if load > 0:
+        occurance3.append(1)
+    elif load < 0:
+        continue
+    else:
+        continue
+proportion3 = 100 * len(occurance3)/(356*48)
+print('New Energy System: Proportion of time in which Kennington draws from the grid in 2050 without storage =', proportion3, '%')
 print("")
 
 occurance2 = []
@@ -432,3 +497,59 @@ purchased, sold = market1.gridBreakdown()
 # convert to pounds
 purchased_daily = ES.E_to_dailyE(purchased, dt) / 100 
 sold_daily = ES.E_to_dailyE(sold, dt) / 100
+
+
+##########################################
+### STEP 10: find and plot generation mix
+##########################################
+
+
+# find the contribution of each generation source to the days demand
+sf1 = 100 * (sum(sf_means[0])) / (sum(gross_load_means[0]))
+sf2 = 100 * (sum(sf_means[1])) / (sum(gross_load_means[1]))
+sf3 = 100 * (sum(sf_means[2])) / (sum(gross_load_means[2]))
+sf4 = 100 * (sum(sf_means[3])) / (sum(gross_load_means[3]))
+sf5 = 100 * (sum(sf_means[4])) / (sum(gross_load_means[4]))
+
+pv1 = 100 * (sum(pv_means[0])) / (sum(gross_load_means[0]))
+pv2 = 100 * (sum(pv_means[1])) / (sum(gross_load_means[1]))
+pv3 = 100 * (sum(pv_means[2])) / (sum(gross_load_means[2]))
+pv4 = 100 * (sum(pv_means[3])) / (sum(gross_load_means[3]))
+pv5 = 100 * (sum(pv_means[4])) / (sum(gross_load_means[4]))
+
+hy1 = 100 * (sum(hydro_means[0])) / (sum(gross_load_means[0]))
+hy2 = 100 * (sum(hydro_means[1])) / (sum(gross_load_means[1]))
+hy3 = 100 * (sum(hydro_means[2])) / (sum(gross_load_means[2]))
+hy4 = 100 * (sum(hydro_means[3])) / (sum(gross_load_means[3]))
+hy5 = 100 * (sum(hydro_means[4])) / (sum(gross_load_means[4]))
+
+gr1 = 100 * (sum(grid_imports_means[0])) / (sum(gross_load_means[0]))
+gr2 = 100 * (sum(grid_imports_means[1])) / (sum(gross_load_means[1]))
+gr3 = 100 * (sum(grid_imports_means[2])) / (sum(gross_load_means[2]))
+gr4 = 100 * (sum(grid_imports_means[3])) / (sum(gross_load_means[3]))
+gr5 = 100 * (sum(grid_imports_means[4])) / (sum(gross_load_means[4]))
+
+# generation mix bar chart (can include error bars using standard deviations)
+labels = ['1st', '2nd', '3rd', '4th', '5th']
+
+sf_percent = [sf1, sf2, sf3, sf4, sf5]
+pv_percent = [pv1, pv2, pv3, pv4, pv5]
+hydro_percent = [hy1, hy2, hy3, hy4, hy5]
+grid_percent = [gr1, gr2, gr3, gr4, gr5]
+width = 0.45                                    # (width of the bars can also be len(x) sequence)
+
+fig, ax = plt.subplots()
+fig.canvas.set_window_title('2050 Generation Mix')
+
+ax.bar(labels, sf_percent, width, label='Solar Farm', color='#8C044F')
+ax.bar(labels, pv_percent, width, bottom=sf_percent, label='Domestic Solar', color='#4F758B')
+ax.bar(labels, hydro_percent, width, bottom=[sum(x) for x in zip(sf_percent,pv_percent)], label='Sandford Hydro', color='#F49C15')
+ax.bar(labels, grid_percent, width, bottom=[sum(x) for x in zip(sf_percent,pv_percent,hydro_percent)], label='Grid Imports', color='#14133B')
+
+ax.set_ylabel('Generation sources as proportions of gross load (%)')
+ax.set_xlabel('Quintiles')
+#ax.set_title('')
+ax.legend(fancybox=True)
+
+
+plt.show()
